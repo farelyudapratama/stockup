@@ -10,20 +10,20 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('product_prices', function (Blueprint $table) {
+        Schema::create('purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->decimal('price', 15, 2);
+            $table->foreignId('vendor_id')->constrained('vendors');
+            $table->date('purchase_date');
+            $table->decimal('total_amount', 15, 2);
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_prices');
+        Schema::dropIfExists('purchases');
     }
 };

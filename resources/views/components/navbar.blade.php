@@ -92,7 +92,7 @@
                                 </svg>
                             </button>
                             <div x-show="openFolders['Kelola Vendor']" x-transition class="pl-4">
-                                <a href="#"
+                                <a href="/vendor/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Vendor</a>
                             </div>
@@ -112,7 +112,7 @@
                                 </svg>
                             </button>
                             <div x-show="openFolders['Pembelian']" x-transition class="pl-4">
-                                <a href="#"
+                                <a href="/purchase/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Pembelian</a>
                             </div>

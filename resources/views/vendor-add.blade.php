@@ -3,32 +3,34 @@
     <div class="min-h-screen bg-gray-100 flex items-center z-10">
         <div class="max-w-screen-mdd w-full space-y-8 bg-white rounded-xl shadow-2xl overflow-hidden">
             <div class="bg-blue-600 px-6 py-4">
-                <h2 class="text-2xl font-bold text-white text-center">Tambah Produk Baru</h2>
+                <h2 class="text-2xl font-bold text-white text-center">Tambah Vendor Baru</h2>
             </div>
 
-            <form action="{{ route('products.store') }}" method="POST" class="px-6 py-8 space-y-6">
+            <form action="{{ route('vendors.store') }}" method="POST" class="px-6 py-8 space-y-6">
                 @csrf {{-- Harus pake ini bjir --}}
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Produk</label>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Vendor</label>
                     <input type="text" id="name" name="name" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                         placeholder="Masukkan nama produk">
                 </div>
 
                 <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi
-                        Produk</label>
-                    <textarea id="description" name="description" rows="3"
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Vendor</label>
+                    <input type="email" id="email" name="email" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                        placeholder="Masukkan deskripsi produk"></textarea>
+                        placeholder="Masukkan email vendor">
                 </div>
 
-                <div>
-                    <label for="initial_stock" class="block text-sm font-medium text-gray-700 mb-1">Stok Awal</label>
-                    <input type="number" id="initial_stock" name="initial_stock" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                        placeholder="Masukkan jumlah stok awal" min="0">
-                </div>
+                {{-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Kuantitas
+                            Stok</label>
+                        <input type="number" id="stock" name="stock" required min="0"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                            placeholder="Masukkan jumlah stok">
+                    </div>
+                </div> --}}
 
                 <div class="flex items-center justify-end">
                     <button type="submit"
@@ -39,7 +41,7 @@
                                 d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Simpan Produk
+                        Simpan Vendor
                     </button>
                 </div>
             </form>

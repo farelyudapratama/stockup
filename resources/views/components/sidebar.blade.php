@@ -49,7 +49,7 @@
                     </svg>
                 </button>
                 <div x-show="openFolders['Kelola Transaksi']" x-transition class="pl-4">
-                    <a href="#"
+                    <a href="/purchases"
                         class="text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                         Pembelian</a>
                 </div>
