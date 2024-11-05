@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductHistory;
+use App\Models\PurchaseDetail;
 // use App\Models\Vendor;
 
 class ProductController extends Controller
@@ -18,22 +19,24 @@ class ProductController extends Controller
     }
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'initial_stock' => 'required|integer|min:0',
         ]);
 
-        // Ini nyimpan produk baru
-        $product = Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'initial_stock' => $request->initial_stock,
-            'current_stock' => $request->initial_stock,
-        ]);
+        try {
+            $product = Product::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'initial_stock' => $request->initial_stock,
+                'current_stock' => $request->initial_stock,
+            ]);
 
-        return redirect()->back()->with('success', 'Produk berhasil ditambahkan');
+            return redirect()->back()->with('success', 'Produk berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan produk: ' . $e->getMessage());
+        }
     }
 
 
@@ -74,7 +77,16 @@ class ProductController extends Controller
 
         $product = Product::findOrFail($id);
 
-        if ($product->name !== $request->name) {
+        $isNameChanged = $product->name !== $request->name;
+        $isDescriptionChanged = $product->description !== $request->description;
+        $isInitialStockChanged = $product->initial_stock != $request->initial_stock;
+        $isCurrentStockChanged = $product->current_stock != $request->current_stock;
+
+        if (!$isNameChanged && !$isDescriptionChanged && !$isInitialStockChanged && !$isCurrentStockChanged) {
+            return redirect()->back()->with('error', 'Tidak ada perubahan yang disimpan karena data sama.');
+        }
+
+        if ($isNameChanged) {
             ProductHistory::create([
                 'product_id' => $product->id,
                 'changed_field' => 'name',
@@ -84,7 +96,7 @@ class ProductController extends Controller
             ]);
         }
 
-        if ($product->description !== $request->description) {
+        if ($isDescriptionChanged) {
             ProductHistory::create([
                 'product_id' => $product->id,
                 'changed_field' => 'description',
@@ -94,7 +106,7 @@ class ProductController extends Controller
             ]);
         }
 
-        if ($product->initial_stock != $request->initial_stock) {
+        if ($isInitialStockChanged) {
             ProductHistory::create([
                 'product_id' => $product->id,
                 'changed_field' => 'initial_stock',
@@ -104,7 +116,7 @@ class ProductController extends Controller
             ]);
         }
 
-        if ($product->current_stock != $request->current_stock) {
+        if ($isCurrentStockChanged) {
             ProductHistory::create([
                 'product_id' => $product->id,
                 'changed_field' => 'current_stock',
@@ -114,7 +126,6 @@ class ProductController extends Controller
             ]);
         }
 
-        // Update produk setelah semua perbandingan selesai
         $product->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -125,10 +136,13 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui');
     }
 
-
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+
+        PurchaseDetail::where('product_id', $product->id)->delete();
+        ProductHistory::where('product_id', $product->id)->delete();
+
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus');

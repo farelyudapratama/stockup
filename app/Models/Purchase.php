@@ -24,4 +24,9 @@ class Purchase extends Model
     {
         return $this->hasMany(PurchaseDetail::class);
     }
+    public function calculateTotalAmount()
+    {
+        $this->total_amount = $this->details->sum('subtotal');
+        $this->save();
+    }
 }

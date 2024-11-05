@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PurchaseReportController;
 
 Route::get('/', function () {
     return view('welcome', );
@@ -14,7 +16,7 @@ Route::get('/product/add', function () {
     return view('product-add');
 })->name('products.create');
 
-Route::post('/products', [Controllers\ProductController::class, 'store'])->name('products.store');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
 Route::get('/products/{id}/edit', [Controllers\ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{id}', [Controllers\ProductController::class, 'update'])->name('products.update');
@@ -28,6 +30,8 @@ Route::get('/vendor/add', function () {
     return view('vendor-add');
 })->name('vendors.create');
 Route::post('/vendors', [Controllers\VendorController::class, 'store'])->name('vendors.store');
+Route::get('/vendors/{id}/edit', [Controllers\VendorController::class, 'edit'])->name('vendors.edit');
+Route::put('/vendors/{id}', [Controllers\VendorController::class, 'update'])->name('vendors.update');
 
 Route::get('/prices', function () {
     return view('price-list');
@@ -40,3 +44,6 @@ Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.
 Route::get('/purchases/{id}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
 Route::put('/purchases/{id}', [PurchaseController::class, 'update'])->name('purchases.update');
 Route::delete('/purchases/{id}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
+
+Route::get('/reports/purchase', [PurchaseReportController::class, 'index'])->name('reports.purchase');
+Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.export');

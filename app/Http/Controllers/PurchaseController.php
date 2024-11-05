@@ -39,8 +39,7 @@ class PurchaseController extends Controller
             ]);
 
             foreach ($request->products as $productData) {
-                // Create purchase detail
-                $purchaseDetail = PurchaseDetail::create([
+                PurchaseDetail::create([
                     'purchase_id' => $purchase->id,
                     'product_id' => $productData['product_id'],
                     'quantity' => $productData['quantity'],
@@ -48,30 +47,25 @@ class PurchaseController extends Controller
                     'subtotal' => $productData['quantity'] * $productData['unit_price'],
                 ]);
 
-                // Update product stock
                 $product = Product::findOrFail($productData['product_id']);
 
-                // Capture the old value before modifying
                 $oldStock = $product->current_stock;
 
-                // Update the current stock
                 $product->current_stock += $productData['quantity'];
                 $product->save();
 
-                // Log the stock change in product history
                 ProductHistory::create([
                     'product_id' => $product->id,
                     'changed_field' => 'current_stock',
-                    'old_value' => $oldStock, // Use the captured old stock value
+                    'old_value' => $oldStock,
                     'new_value' => $product->current_stock,
                     'reason_changed' => 'Purchase added',
                 ]);
             }
 
-
-            return response()->json(['message' => 'Purchase and stock updated successfully.'], 200);
+            return redirect()->back()->with('success', 'Pembelian berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to process purchase. Error: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Failed to added purchase. Error: ' . $e->getMessage());
         }
     }
 
@@ -112,8 +106,8 @@ class PurchaseController extends Controller
     public function edit($id)
     {
         $purchase = Purchase::with('details')->findOrFail($id);
-        $vendors = Vendor::all(); // Load vendors for the edit view
-        $products = Product::all(); // Load products for the edit view
+        $vendors = Vendor::all();
+        $products = Product::all();
 
         return view('purchase-edit', compact('purchase', 'vendors', 'products'));
     }
@@ -133,23 +127,19 @@ class PurchaseController extends Controller
         try {
             $purchase = Purchase::findOrFail($id);
 
-            // Update purchase main information
             $purchase->update([
                 'vendor_id' => $request->vendor_id,
                 'purchase_date' => $request->purchase_date,
                 'total_amount' => $request->total_amount,
             ]);
 
-            // First, remove old purchase details
             foreach ($purchase->details as $detail) {
                 $product = Product::findOrFail($detail->product_id);
                 $oldStock = $product->current_stock;
 
-                // Decrease the stock back by the old quantity
                 $product->current_stock -= $detail->quantity;
                 $product->save();
 
-                // Log the stock change in product history
                 ProductHistory::create([
                     'product_id' => $product->id,
                     'changed_field' => 'current_stock',
@@ -158,10 +148,9 @@ class PurchaseController extends Controller
                     'reason_changed' => 'Purchase updated (detail removed)',
                 ]);
 
-                $detail->delete(); // Delete the old detail
+                $detail->delete();
             }
 
-            // Add new purchase details
             foreach ($request->products as $productData) {
                 PurchaseDetail::create([
                     'purchase_id' => $purchase->id,
@@ -171,13 +160,11 @@ class PurchaseController extends Controller
                     'subtotal' => $productData['quantity'] * $productData['unit_price'],
                 ]);
 
-                // Update the product stock
                 $product = Product::findOrFail($productData['product_id']);
                 $oldStock = $product->current_stock;
                 $product->current_stock += $productData['quantity'];
                 $product->save();
 
-                // Log the stock change in product history
                 ProductHistory::create([
                     'product_id' => $product->id,
                     'changed_field' => 'current_stock',
@@ -199,14 +186,12 @@ class PurchaseController extends Controller
         try {
             $purchase = Purchase::findOrFail($id);
 
-            // Update stock before deleting purchase details
             foreach ($purchase->details as $detail) {
                 $product = Product::findOrFail($detail->product_id);
                 $oldStock = $product->current_stock;
                 $product->current_stock -= $detail->quantity;
                 $product->save();
 
-                // Optionally log the stock change in product history
                 ProductHistory::create([
                     'product_id' => $product->id,
                     'changed_field' => 'current_stock',
@@ -220,7 +205,7 @@ class PurchaseController extends Controller
 
             $purchase->delete();
 
-            return response()->json(['message' => 'Purchase deleted successfully.'], 200);
+            return redirect()->back()->with('success', 'Purchase deleted successfully.');
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to delete purchase. Error: ' . $e->getMessage()], 500);
         }

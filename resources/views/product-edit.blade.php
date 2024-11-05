@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="flex items-center justify-end">
-                    <button type="submit"
+                    <button type="submit" id="save-button"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                         Simpan Perubahan
                     </button>
@@ -60,5 +60,30 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const saveButton = document.getElementById('save-button');
+        saveButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            const form = document.querySelector('form');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            Swal.fire({
+                title: 'Konfirmasi Simpan',
+                text: "Apakah Anda yakin ingin menyimpan data ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, simpan!',
+                cancelButtonText: 'Tidak, batalkan',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.querySelector('form').submit();
+                }
+            });
+        });
+    </script>
 
 </x-layout>

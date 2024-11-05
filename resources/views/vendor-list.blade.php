@@ -74,8 +74,8 @@
                                 <td class="py-3 px-6 text-center border-b border-gray-200 border-r">
                                     {{ $vendor->email }}</td>
                                 <td class="py-3 px-6 text-center border-b border-gray-200">
-                                    <a href="" class="text-blue-600 hover:text-blue-900"><i
-                                            class="fas fa-edit"></i> Edit</a>
+                                    <a href="{{ route('vendors.edit', $vendor->id) }}"
+                                        class="text-blue-600 hover:text-blue-900"><i class="fas fa-edit"></i> Edit</a>
                                     <form action="{{ route('vendors.destroy', $vendor->id) }}" method="POST"
                                         class="inline-block ml-4">
                                         @csrf
@@ -131,4 +131,24 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
 </x-layout>

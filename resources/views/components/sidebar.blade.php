@@ -21,7 +21,7 @@
                     class="{{ request()->is(['products', 'vendors', 'prices']) ? 'bg-cyan-700' : 'text-white ' }} flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                     <span>Master Data</span>
                     <svg class="w-4 h-4 transition-transform duration-200"
-                        :class="{ 'rotate-90': openFolders['Kelola Produk'] }" xmlns="http://www.w3.org/2000/svg"
+                        :class="{ 'rotate-90': openFolders['Kelola Master Data'] }" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
@@ -40,33 +40,33 @@
             </div>
             <div class="mb-2">
                 <button @click="openFolders['Kelola Transaksi'] = !openFolders['Kelola Transaksi']"
-                    class="text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
+                    class="{{ request()->is(['purchases']) ? 'bg-cyan-700' : 'text-white ' }} text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                     <span>Transaksi</span>
                     <svg class="w-4 h-4 transition-transform duration-200"
-                        :class="{ 'rotate-90': openFolders['Kelola Produk'] }" xmlns="http://www.w3.org/2000/svg"
+                        :class="{ 'rotate-90': openFolders['Kelola Transaksi'] }" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
                 <div x-show="openFolders['Kelola Transaksi']" x-transition class="pl-4">
                     <a href="/purchases"
-                        class="text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
+                        class="{{ request()->is('purchases') ? 'bg-cyan-800' : 'text-white ' }} text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                         Pembelian</a>
                 </div>
             </div>
             <div class="mb-2">
                 <button @click="openFolders['Kelola Laporan'] = !openFolders['Kelola Laporan']"
-                    class="text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
+                    class="{{ request()->is(['reports/purchase']) ? 'bg-cyan-700' : 'text-white ' }} text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                     <span>Laporan</span>
                     <svg class="w-4 h-4 transition-transform duration-200"
-                        :class="{ 'rotate-90': openFolders['Kelola Produk'] }" xmlns="http://www.w3.org/2000/svg"
+                        :class="{ 'rotate-90': openFolders['Kelola Laporan'] }" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
                 <div x-show="openFolders['Kelola Laporan']" x-transition class="pl-4">
-                    <a href="#"
-                        class="text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
+                    <a href="/reports/purchase"
+                        class="{{ request()->is('reports/purchase') ? 'bg-cyan-800' : 'text-white ' }} text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                         Laporan Pembelian</a>
                     <a href="#"
                         class="text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">

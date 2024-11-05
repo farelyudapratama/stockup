@@ -1,17 +1,15 @@
 <x-layout>
     <x-slot:folderName>Master Data</x-slot:folderName>
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-4">
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <div
-                class="flex flex-col lg:flex-row justify-between items-start lg:items-center bg-gray-100 p-4 border-b gap-4">
+            <div class="flex flex-col gap-4 bg-gray-100 p-4 border-b">
                 <h2 class="text-2xl font-bold text-gray-700">
                     <i class="fas fa-box"></i> Produk
                 </h2>
 
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
-                    <form method="GET" action="{{ route('products.index') }}"
-                        class="flex-1 lg:flex-initial min-w-[280px]">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <form method="GET" action="{{ route('products.index') }}" class="flex-1 min-w-[280px]">
                         <input type="hidden" name="entries" value="{{ $entries }}">
                         <div class="flex items-center border rounded-lg bg-white overflow-hidden w-full">
                             <input type="text" name="search" value="{{ $search }}"
@@ -49,50 +47,36 @@
                         <tr>
                             <th
                                 class="py-3 px-2 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-12">
-                                No
-                            </th>
+                                No</th>
                             <th
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r">
-                                Nama Produk
-                            </th>
+                                Nama Produk</th>
                             <th
                                 class="hidden md:table-cell py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r">
-                                Deskripsi Produk
-                            </th>
+                                Deskripsi Produk</th>
                             <th
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r whitespace-nowrap">
-                                Stok Awal
-                            </th>
+                                Stok Awal</th>
                             <th
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r whitespace-nowrap">
-                                Stok Sekarang
-                            </th>
+                                Stok Sekarang</th>
                             <th
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Aksi
-                            </th>
+                                Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($products as $index => $product)
                             <tr class="hover:bg-gray-300">
-                                <td class="py-3 px-2 text-center border-r">
-                                    {{ $products->firstItem() + $index }}
-                                </td>
-                                <td class="py-3 px-4 text-center border-r">
-                                    {{ $product->name }}
-                                </td>
+                                <td class="py-3 px-2 text-center border-r">{{ $products->firstItem() + $index }}</td>
+                                <td class="py-3 px-4 text-center border-r">{{ $product->name }}</td>
                                 <td class="hidden text-center md:table-cell py-3 px-4 border-r">
-                                    {{ $product->description }}
-                                </td>
+                                    {{ $product->description }}</td>
                                 <td class="py-3 px-4 text-center border-r whitespace-nowrap">
-                                    {{ $product->initial_stock }}
-                                </td>
+                                    {{ $product->initial_stock }}</td>
                                 <td
-                                    class="py-3 px-4 text-center border-r whitespace-nowrap 
-                                    {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
-                                    {{ $product->current_stock }}
-                                </td>
+                                    class="py-3 px-4 text-center border-r whitespace-nowrap {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
+                                    {{ $product->current_stock }}</td>
                                 <td class="py-3 px-4">
                                     <div class="flex gap-4 justify-center">
                                         <a href="{{ route('products.edit', $product->id) }}"
@@ -113,9 +97,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-8 px-4 text-center text-gray-500">
-                                    Tidak ada produk yang ditemukan
-                                </td>
+                                <td colspan="6" class="py-8 px-4 text-center text-gray-500">Tidak ada produk yang
+                                    ditemukan</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -128,9 +111,8 @@
                         Menampilkan {{ $products->firstItem() ?? 0 }} hingga {{ $products->lastItem() ?? 0 }} dari
                         {{ $products->total() }} entri
                         @if ($search)
-                            <span class="block sm:inline sm:ml-2">
-                                (difilter dari {{ $products->total() }} total entri)
-                            </span>
+                            <span class="block sm:inline sm:ml-2">(difilter dari {{ $products->total() }} total
+                                entri)</span>
                         @endif
                     </div>
                     <div class="flex gap-2">
@@ -160,4 +142,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
 </x-layout>

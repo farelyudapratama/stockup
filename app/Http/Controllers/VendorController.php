@@ -26,7 +26,6 @@ class VendorController extends Controller
             'name' => $request->name,
             'email' => $request->email,
         ]);
-
         return redirect()->back()->with('success', 'Vendor berhasil ditambahkan');
     }
 
@@ -56,5 +55,27 @@ class VendorController extends Controller
         $vendor->delete();
 
         return redirect()->route('vendors.index')->with('success', 'Vendor ' . $vendorName . ' berhasil dihapus');
+    }
+
+    public function edit($id)
+    {
+        $vendor = Vendor::findOrFail($id);
+
+        return view('vendor-edit', compact('vendor'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+        ]);
+
+        $vendor = Vendor::findOrFail($id);
+        $vendor->name = $request->name;
+        $vendor->email = $request->email;
+        $vendor->save();
+
+        return redirect()->route('vendors.index')->with('success', 'Vendor berhasil diubah');
     }
 }
