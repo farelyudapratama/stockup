@@ -181,7 +181,6 @@ class ProductController extends Controller
             }
         }
 
-        // Fallback default
         return [
             'initial_stock' => $product->initial_stock,
             'current_stock' => $product->initial_stock
