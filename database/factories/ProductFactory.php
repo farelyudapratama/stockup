@@ -18,8 +18,19 @@ class ProductFactory extends Factory
     {
         return [
             //
-            'name' => fake()->sentence(3),
-            'description' => fake()->paragraph(3),
+            'name' => fake()->unique()->randomElement([
+                'Kipas Angin',
+                'Setrika',
+                'Rice Cooker',
+                'Blender',
+                'TV LED',
+                'Kulkas',
+                'Speaker Bluetooth',
+                'Lampu LED',
+                'AC Portable',
+                'Mixer'
+            ]),
+            'description' => fake()->sentence(),
             'initial_stock' => fake()->numberBetween(10, 100),
             'current_stock' => fake()->numberBetween(0, 100),
         ];

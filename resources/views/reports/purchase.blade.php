@@ -64,7 +64,7 @@
                     class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-4 py-2 rounded-md">
                     Reset Filter
                 </a>
-                <a href="{{ route('reports.export', request()->query()) }}"
+                <a href="{{ route('reports.purchaseexport', request()->query()) }}"
                     class="ml-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md inline-flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -100,27 +100,27 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Tanggal Pembelian
                         </th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Nama Barang
                         </th>
                         <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Jumlah
                         </th>
                         <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Harga Satuan (IDR)
                         </th>
                         <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Sub Total (IDR)
                         </th>
                         <th
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-200">
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase border border-gray-300">
                             Total keseluruhan
                         </th>
                     </tr>
@@ -144,24 +144,24 @@
                             @endphp
 
                             @foreach ($purchaseDetails as $index => $detail)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-200">
+                                <tr class="hover:bg-gray-200">
+                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-300">
                                         {{ $purchase->purchase_date->format('d/m/Y') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-200">
+                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-300">
                                         {{ $detail->product->name }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-200">
+                                    <td class="px-6 py-4 text-sm text-gray-900 border border-gray-300">
                                         {{ number_format($detail->quantity, 0, ',', '.') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-200">
+                                    <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-300">
                                         {{ number_format($detail->unit_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-200">
+                                    <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-300">
                                         {{ number_format($detail->subtotal, 0, ',', '.') }}
                                     </td>
                                     @if ($index === 0)
-                                        <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-200"
+                                        <td class="px-6 py-4 text-sm text-gray-900 text-right border border-gray-300"
                                             rowspan="{{ $totalRows }}">
                                             {{ number_format($purchase->total_amount, 0, ',', '.') }}
                                         </td>

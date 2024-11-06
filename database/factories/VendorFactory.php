@@ -16,10 +16,10 @@ class VendorFactory extends Factory
      */
     public function definition(): array
     {
+        $domain = fake()->boolean ? fake()->freeEmailDomain() : fake()->companyEmail();
         return [
-            //
             'name' => fake()->company(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->userName() . '@' . $domain,
         ];
     }
 }
