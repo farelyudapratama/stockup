@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center z-10 px-2">
+    <div class="min-h-screen bg-gray-100 flex items-start justify-center z-10 px-2 my-10">
         <div class="w-full max-w-full sm:max-w-screen-lg space-y-6 bg-white rounded-lg shadow-xl overflow-hidden">
             <div class="bg-blue-600 px-4 py-3 sm:px-6">
                 <h2 class="text-lg sm:text-2xl font-bold text-white text-center">Tambah Pembelian Baru</h2>
@@ -76,7 +76,11 @@
                 </div>
 
                 <!-- Tombol Simpan -->
-                <div class="flex justify-end">
+                <div class="flex items-center justify-between">
+                    <a href="{{ route('purchases.index') }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition duration-150 ease-in-out cursor-pointer">
+                        Batal
+                    </a>
                     <button type="submit"
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                         Simpan Pembelian

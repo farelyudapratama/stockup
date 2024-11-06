@@ -46,4 +46,7 @@ Route::put('/purchases/{id}', [PurchaseController::class, 'update'])->name('purc
 Route::delete('/purchases/{id}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
 
 Route::get('/reports/purchase', [PurchaseReportController::class, 'index'])->name('reports.purchase');
-Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.export');
+Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.purchaseexport');
+
+Route::get('/reports/stock', [Controllers\StockReportController::class, 'index'])->name('reports.stock');
+Route::get('/reports/stock/export', [Controllers\StockReportController::class, 'export'])->name('reports.export');
