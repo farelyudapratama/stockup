@@ -21,19 +21,41 @@
     </div>
 
     <script>
-        document.getElementById('products-container').addEventListener('input', function() {
+        function formatRupiah(angka) {
+            return 'Rp ' + parseFloat(angka.replace(/[^,\d]/g, '')).toLocaleString('id-ID');
+        }
+
+        function formatInputRupiah(element) {
+            let inputVal = element.value.replace(/[^,\d]/g, '');
+            if (inputVal) {
+                element.value = formatRupiah(inputVal);
+            } else {
+                element.value = '';
+            }
+            calculateTotal();
+        }
+
+        function parseRupiahToNumber(rupiah) {
+            return parseFloat(rupiah.replace(/[Rp,.]/g, '').replace(',', '.')) || 0;
+        }
+
+        function calculateTotal() {
             const productItems = document.querySelectorAll('.product-item');
             let total = 0;
 
             productItems.forEach(item => {
                 const quantity = item.querySelector('input[name*="[quantity]"]').value || 0;
-                const unit_price = item.querySelector('input[name*="[unit_price]"]').value || 0;
-                const subtotal = quantity * unit_price;
-
+                const unitPriceText = item.querySelector('input[name*="[unit_price]"]').value || '0';
+                const unitPrice = parseRupiahToNumber(unitPriceText);
+                const subtotal = quantity * unitPrice;
                 total += subtotal;
             });
 
-            document.getElementById('total_amount').value = total.toFixed(2);
+            document.getElementById('total_amount').value = formatRupiah(total.toString());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('products-container').addEventListener('input', calculateTotal);
         });
 
         // // sweet alert
