@@ -72,11 +72,7 @@
                                 <a href="/product/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Produk</a>
-<<<<<<< HEAD
-                                <a href="#"
-=======
                                 <a href="/price/add"
->>>>>>> baru
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Harga</a>
                             </div>
@@ -162,11 +158,7 @@
                             tabindex="-1" id="user-menu-item-0">Your Profile</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
                             tabindex="-1" id="user-menu-item-1">Settings</a>
-<<<<<<< HEAD
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
-=======
                         <a href="logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
->>>>>>> baru
                             tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>
                 </div>

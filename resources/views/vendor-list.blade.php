@@ -35,11 +35,7 @@
                     </div>
 
                     <a href="{{ route('vendors.create') }}"
-<<<<<<< HEAD
-                        class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 transition duration-200 whitespace-nowrap">
-=======
                         class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-lg">
->>>>>>> baru
                         <i class="fas fa-plus"></i> Tambah Vendor
                     </a>
                 </div>
