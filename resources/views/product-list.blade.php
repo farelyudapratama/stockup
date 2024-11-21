@@ -188,23 +188,23 @@
                             // Jika ada data pembelian
                             if (Array.isArray(data.purchases) && data.purchases.length > 0) {
                                 purchaseDetails = `
-                                    <h4>Data Pembelian:</h4>
+                                    <h4><strong>Data Pembelian:</strong></h4>
                                     <ul>
                                         ${data.purchases.map(purchase => 
                                             `<li>ID Pembelian: ${purchase.purchase_id}, Jumlah: ${purchase.quantity}, Tanggal: ${purchase.date}</li>`
                                         ).join('')}
-                                    </ul>`;
+                                    </ul><br>`;
                             }
 
                             // Jika ada data pesanan
                             if (Array.isArray(data.orders) && data.orders.length > 0) {
                                 orderDetails = `
-                                    <h4>Data Pesanan:</h4>
+                                    <h4><strong>Data Pesanan:</strong></h4>
                                     <ul>
                                         ${data.orders.map(order => 
                                             `<li>ID Pesanan: ${order.order_id}, Jumlah: ${order.quantity}, Tanggal: ${order.date}</li>`
                                         ).join('')}
-                                    </ul>`;
+                                    </ul><br>`;
                             }
 
                             // Jika ada pembelian atau pesanan terkait
@@ -213,6 +213,7 @@
                                     title: 'Produk Tidak Dapat Dihapus',
                                     html: `
                                         <p>Produk ini masih terkait dengan beberapa data lainnya:</p>
+                                        <br>
                                         ${purchaseDetails}${orderDetails}
                                         <p>Silakan hapus data terkait terlebih dahulu sebelum menghapus produk ini.</p>`,
                                     icon: 'warning',
