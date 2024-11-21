@@ -24,27 +24,31 @@ class PurchaseController extends Controller
         $request->validate([
             'vendor_id' => 'required|exists:vendors,id',
             'purchase_date' => 'required|date',
-            'total_amount' => 'required|numeric',
+            'total_amount' => 'required',
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
-            'products.*.unit_price' => 'required|numeric',
+            'products.*.unit_price' => 'required',
         ]);
 
         try {
+            $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
+
             $purchase = Purchase::create([
                 'vendor_id' => $request->vendor_id,
                 'purchase_date' => $request->purchase_date,
-                'total_amount' => $request->total_amount,
+                'total_amount' => $totalAmount,
             ]);
 
             foreach ($request->products as $productData) {
+                $unitPrice = (float) preg_replace('/[^\d]/', '', $productData['unit_price']);
+
                 PurchaseDetail::create([
                     'purchase_id' => $purchase->id,
                     'product_id' => $productData['product_id'],
                     'quantity' => $productData['quantity'],
-                    'unit_price' => $productData['unit_price'],
-                    'subtotal' => $productData['quantity'] * $productData['unit_price'],
+                    'unit_price' => $unitPrice,
+                    'subtotal' => $unitPrice * $productData['quantity'],
                 ]);
 
                 $product = Product::findOrFail($productData['product_id']);
@@ -65,9 +69,10 @@ class PurchaseController extends Controller
 
             return redirect()->back()->with('success', 'Pembelian berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to added purchase. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to add purchase. Error: ' . $e->getMessage());
         }
     }
+
 
     public function index(Request $request)
     {
@@ -117,20 +122,22 @@ class PurchaseController extends Controller
         $request->validate([
             'vendor_id' => 'required|exists:vendors,id',
             'purchase_date' => 'required|date',
-            'total_amount' => 'required|numeric',
+            'total_amount' => 'required',
             'products' => 'required|array',
             'products.*.product_id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1',
-            'products.*.unit_price' => 'required|numeric',
+            'products.*.unit_price' => 'required',
         ]);
 
         try {
             $purchase = Purchase::findOrFail($id);
 
+            $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
+
             $purchase->update([
                 'vendor_id' => $request->vendor_id,
                 'purchase_date' => $request->purchase_date,
-                'total_amount' => $request->total_amount,
+                'total_amount' => $totalAmount,
             ]);
 
             foreach ($purchase->details as $detail) {
@@ -152,12 +159,13 @@ class PurchaseController extends Controller
             }
 
             foreach ($request->products as $productData) {
+                $unitPrice = (float) preg_replace('/[^\d]/', '', $productData['unit_price']);
                 PurchaseDetail::create([
                     'purchase_id' => $purchase->id,
                     'product_id' => $productData['product_id'],
                     'quantity' => $productData['quantity'],
-                    'unit_price' => $productData['unit_price'],
-                    'subtotal' => $productData['quantity'] * $productData['unit_price'],
+                    'unit_price' => $unitPrice,
+                    'subtotal' => $productData['quantity'] * $unitPrice,
                 ]);
 
                 $product = Product::findOrFail($productData['product_id']);
@@ -174,12 +182,11 @@ class PurchaseController extends Controller
                 ]);
             }
 
-            return response()->json(['message' => 'Purchase and stock updated successfully.'], 200);
+            return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update purchase. Error: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Failed to update purchase. Error: ' . $e->getMessage());
         }
     }
-
 
     public function destroy($id)
     {

@@ -21,12 +21,43 @@
     </div>
 
     <script>
+<<<<<<< HEAD
         document.getElementById('products-container').addEventListener('input', function() {
+=======
+        function formatRupiah(angka) {
+            const cleanNumber = parseFloat(angka.toString().replace(/[^0-9]/g, ''));
+
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            });
+
+            return formatter.format(cleanNumber || 0);
+        }
+
+        function formatInputRupiah(element) {
+            let inputVal = element.value.replace(/[^,\d]/g, '');
+            if (inputVal) {
+                element.value = formatRupiah(inputVal);
+            } else {
+                element.value = '';
+            }
+            calculateTotal();
+        }
+
+        function parseRupiahToNumber(rupiah) {
+            return parseFloat(rupiah.replace(/[Rp,.]/g, '').replace(',', '.')) || 0;
+        }
+
+        function calculateTotal() {
+>>>>>>> baru
             const productItems = document.querySelectorAll('.product-item');
             let total = 0;
 
             productItems.forEach(item => {
                 const quantity = item.querySelector('input[name*="[quantity]"]').value || 0;
+<<<<<<< HEAD
                 const unit_price = item.querySelector('input[name*="[unit_price]"]').value || 0;
                 const subtotal = quantity * unit_price;
 
@@ -34,6 +65,19 @@
             });
 
             document.getElementById('total_amount').value = total.toFixed(2);
+=======
+                const unitPriceText = item.querySelector('input[name*="[unit_price]"]').value || '0';
+                const unitPrice = parseRupiahToNumber(unitPriceText);
+                const subtotal = quantity * unitPrice;
+                total += subtotal;
+            });
+
+            document.getElementById('total_amount').value = formatRupiah(total.toString());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('products-container').addEventListener('input', calculateTotal);
+>>>>>>> baru
         });
 
         // // sweet alert

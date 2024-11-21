@@ -34,8 +34,23 @@
                         <span class="text-gray-600">entri</span>
                     </form>
 
+                    <form method="GET" action="{{ route('products.index') }}"
+                        class="flex items-center space-x-2 min-w-fit">
+                        <input type="hidden" name="search" value="{{ $search }}">
+                        <input type="hidden" name="entries" value="{{ $entries }}">
+                        <label for="month" class="text-gray-600">Filter Bulan</label>
+                        <select id="month" name="month" class="border rounded-lg px-3 py-2 text-gray-700"
+                            onchange="this.form.submit()">
+                            <option value="current" {{ $month == 'current' ? 'selected' : '' }}>Bulan Ini</option>
+                            <option value="previous" {{ $month == 'previous' ? 'selected' : '' }}>Bulan Lalu</option>
+                            <option value="two_months_ago" {{ $month == 'two_months_ago' ? 'selected' : '' }}>2 Bulan
+                                Lalu</option>
+                            <option value="three_months_ago" {{ $month == 'three_months_ago' ? 'selected' : '' }}>3
+                                Bulan Lalu</option>
+                        </select>
+                    </form>
                     <a href="{{ route('products.create') }}"
-                        class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700 transition duration-200 whitespace-nowrap">
+                        class="inline-flex items-center px-5 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-lg">
                         <i class="fas fa-plus"></i> Tambah Produk
                     </a>
                 </div>
@@ -73,10 +88,12 @@
                                 <td class="hidden text-center md:table-cell py-3 px-4 border-r">
                                     {{ $product->description }}</td>
                                 <td class="py-3 px-4 text-center border-r whitespace-nowrap">
-                                    {{ $product->initial_stock }}</td>
+                                    {{ $product->initial_stock }}
+                                </td>
                                 <td
                                     class="py-3 px-4 text-center border-r whitespace-nowrap {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
-                                    {{ $product->current_stock }}</td>
+                                    {{ $product->current_stock }}
+                                </td>
                                 <td class="py-3 px-4">
                                     <div class="flex gap-4 justify-center">
                                         <a href="{{ route('products.edit', $product->id) }}"
@@ -121,14 +138,14 @@
                                 <i class="fas fa-chevron-left"></i> Previous
                             </span>
                         @else
-                            <a href="{{ $products->appends(['search' => $search, 'entries' => $entries])->previousPageUrl() }}"
+                            <a href="{{ $products->appends(['search' => $search, 'entries' => $entries, 'month' => $month])->previousPageUrl() }}"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
                                 <i class="fas fa-chevron-left"></i> Previous
                             </a>
                         @endif
 
                         @if ($products->hasMorePages())
-                            <a href="{{ $products->appends(['search' => $search, 'entries' => $entries])->nextPageUrl() }}"
+                            <a href="{{ $products->appends(['search' => $search, 'entries' => $entries, 'month' => $month])->nextPageUrl() }}"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
                                 Next <i class="fas fa-chevron-right"></i>
                             </a>

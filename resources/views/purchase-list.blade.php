@@ -7,7 +7,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-100 p-4 border-b">
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-700 mb-3 sm:mb-0">Daftar Pembelian</h2>
                 <a href="{{ route('purchases.create') }}"
-                    class="w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200 text-center">
+                    class="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-lg text-center">
                     + Tambah Pembelian
                 </a>
             </div>
@@ -213,18 +213,21 @@
                     </div>
                     <div class="flex gap-2">
                         @if ($purchases->onFirstPage())
-                            <span
-                                class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">Previous</span>
+                            <span class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"><i
+                                    class="fas fa-chevron-left"></i> Previous</span>
                         @else
                             <a href="{{ $purchases->appends(request()->query())->previousPageUrl() }}"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">Previous</a>
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"><i
+                                    class="fas fa-chevron-left"></i> Previous</a>
                         @endif
 
                         @if ($purchases->hasMorePages())
                             <a href="{{ $purchases->appends(request()->query())->nextPageUrl() }}"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">Next</a>
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">Next
+                                <i class="fas fa-chevron-right"></i></a>
                         @else
-                            <span class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">Next</span>
+                            <span class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">Next <i
+                                    class="fas fa-chevron-right"></i></span>
                         @endif
                     </div>
                 </div>

@@ -1,5 +1,9 @@
 <x-layout>
+<<<<<<< HEAD
     <div class="min-h-screen bg-gray-100 flex items-center justify-center z-10">
+=======
+    <div class="min-h-screen bg-gray-100 flex items-start justify-center z-10 px-2 my-10">
+>>>>>>> baru
         <div class="max-w-screen-lg w-full space-y-8 bg-white rounded-xl shadow-2xl overflow-hidden">
             <div class="bg-blue-600 px-6 py-4">
                 <h2 class="text-2xl font-bold text-white text-center">Edit Pembelian</h2>
@@ -28,8 +32,13 @@
                 <div>
                     <label for="purchase_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal
                         Pembelian</label>
+<<<<<<< HEAD
                     <input type="date" id="purchase_date" name="purchase_date" value="{{ $purchase->purchase_date }}"
                         required
+=======
+                    <input type="date" id="purchase_date" name="purchase_date"
+                        value="{{ $purchase->purchase_date->format('Y-m-d') }}" required
+>>>>>>> baru
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                 </div>
 
@@ -66,10 +75,17 @@
                             <div>
                                 <label for="unit_price"
                                     class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+<<<<<<< HEAD
                                 <input type="number" name="products[{{ $index }}][unit_price]"
                                     value="{{ $detail->unit_price }}" required min="0" step="0.01"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                     placeholder="Masukkan harga">
+=======
+                                <input type="text" name="products[{{ $index }}][unit_price]"
+                                    value="{{ $detail->unit_price }}" required min="0" step="0.01"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                    placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
+>>>>>>> baru
                             </div>
 
                             <div class="flex items-center">
@@ -92,14 +108,26 @@
                 <!-- Total Harga -->
                 <div>
                     <label for="total_amount" class="block text-sm font-medium text-gray-700 mb-1">Total Harga</label>
+<<<<<<< HEAD
                     <input type="number" id="total_amount" name="total_amount" value="{{ $purchase->total_amount }}"
+=======
+                    <input type="text" id="total_amount" name="total_amount" value="{{ $purchase->total_amount }}"
+>>>>>>> baru
                         required min="0" step="0.01"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                         placeholder="Total harga akan dihitung otomatis" readonly>
                 </div>
 
                 <!-- Tombol Simpan -->
+<<<<<<< HEAD
                 <div class="flex items-center justify-end">
+=======
+                <div class="flex items-center justify-between">
+                    <a href="{{ route('purchases.index') }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition duration-150 ease-in-out cursor-pointer">
+                        Batal
+                    </a>
+>>>>>>> baru
                     <button type="submit"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                         Simpan Perubahan
