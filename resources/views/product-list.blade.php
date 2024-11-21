@@ -101,11 +101,13 @@
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                         <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                            class="inline"
+                                            class="inline delete-product-form"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <button type="submit"
+                                                class="delete-product-btn text-red-600 hover:text-red-900">
                                                 <i class="fas fa-trash"></i> Hapus
                                             </button>
                                         </form>
@@ -114,8 +116,10 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-8 px-4 text-center text-gray-500">Tidak ada produk yang
-                                    ditemukan</td>
+                                <td colspan="6" class="py-8 px-4 text-center text-gray-500">
+                                    Tidak ada produk yang ditemukan
+                                    {{ $search ? "untuk kata kunci \"$search\"" : '' }}.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -162,23 +166,106 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses',
-                    text: '{{ session('success') }}',
-                    confirmButtonText: 'OK'
-                });
-            @endif
+            const deleteButtons = document.querySelectorAll('.delete-product-btn');
 
-            @if (session('error'))
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', async function(e) {
+                    e.preventDefault();
+
+                    const form = button.closest('.delete-product-form');
+                    const productId = form.querySelector('input[name="product_id"]').value;
+
+                    try {
+                        const response = await fetch(
+                            `/products/${productId}/relationship-details`);
+                        const data = await response.json();
+
+                        // Cek apakah ada data terkait yang ditemukan
+                        if (data && (data.purchases || data.orders)) {
+                            let purchaseDetails = '';
+                            let orderDetails = '';
+
+                            // Jika ada data pembelian
+                            if (Array.isArray(data.purchases) && data.purchases.length > 0) {
+                                purchaseDetails = `
+                                    <h4>Data Pembelian:</h4>
+                                    <ul>
+                                        ${data.purchases.map(purchase => 
+                                            `<li>ID Pembelian: ${purchase.purchase_id}, Jumlah: ${purchase.quantity}, Tanggal: ${purchase.date}</li>`
+                                        ).join('')}
+                                    </ul>`;
+                            }
+
+                            // Jika ada data pesanan
+                            if (Array.isArray(data.orders) && data.orders.length > 0) {
+                                orderDetails = `
+                                    <h4>Data Pesanan:</h4>
+                                    <ul>
+                                        ${data.orders.map(order => 
+                                            `<li>ID Pesanan: ${order.order_id}, Jumlah: ${order.quantity}, Tanggal: ${order.date}</li>`
+                                        ).join('')}
+                                    </ul>`;
+                            }
+
+                            // Jika ada pembelian atau pesanan terkait
+                            if (data.purchases?.length > 0 || data.orders?.length > 0) {
+                                Swal.fire({
+                                    title: 'Produk Tidak Dapat Dihapus',
+                                    html: `
+                                        <p>Produk ini masih terkait dengan beberapa data lainnya:</p>
+                                        ${purchaseDetails}${orderDetails}
+                                        <p>Silakan hapus data terkait terlebih dahulu sebelum menghapus produk ini.</p>`,
+                                    icon: 'warning',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                // Jika tidak ada data terkait, lanjutkan konfirmasi penghapusan produk
+                                Swal.fire({
+                                    title: 'Konfirmasi Penghapusan Produk',
+                                    text: "Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Ya, Hapus!',
+                                    cancelButtonText: 'Batal'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        form.submit();
+                                    }
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                title: 'Terjadi Kesalahan',
+                                text: 'Tidak dapat memuat informasi terkait produk ini. Mohon coba lagi nanti.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+
+                    } catch (error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Terjadi Kesalahan',
+                            text: 'Ada masalah saat mengakses data dari server. Pastikan koneksi internet Anda baik.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+
+            // Menampilkan alert berdasarkan session sukses atau error
+            @if (session('success') || session('error'))
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Terjadi Kesalahan',
-                    text: '{{ session('error') }}',
+                    icon: '{{ session('success') ? 'success' : 'error' }}',
+                    title: '{{ session('success') ? 'Sukses' : 'Terjadi Kesalahan' }}',
+                    text: '{{ session('success') ?? session('error') }}',
                     confirmButtonText: 'OK'
                 });
             @endif
         });
     </script>
+
 </x-layout>

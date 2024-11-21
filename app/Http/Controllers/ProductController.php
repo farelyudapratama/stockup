@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductHistory;
+use App\Models\Purchase;
 use App\Models\PurchaseDetail;
 use Carbon\Carbon;
 
@@ -267,11 +268,86 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        PurchaseDetail::where('product_id', $product->id)->delete();
-        ProductHistory::where('product_id', $product->id)->delete();
+        // Cari relasi terkait (Pembelian dan Pesanan)
+        $relatedPurchases = PurchaseDetail::where('product_id', $product->id)->count();
+        // $relatedOrders = OrderDetail::where('product_id', $product->id)->count();
+
+        // Menyusun pesan error jika terdapat relasi terkait
+        $errorMessage = 'Produk ini tidak dapat dihapus karena memiliki hubungan berikut: ';
+
+        $hasError = false;
+        if ($relatedPurchases > 0) {
+            $errorMessage .= "$relatedPurchases pembelian, ";
+            $hasError = true;
+        }
+
+        // if ($relatedOrders > 0) {
+        //     $errorMessage .= "$relatedOrders pesanan, ";
+        //     $hasError = true;
+        // }
+
+        if ($hasError) {
+            return redirect()->route('products.index')->with('error', rtrim($errorMessage, ', '));
+        }
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus');
+        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
     }
+
+    public function relationships($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $relatedPurchases = PurchaseDetail::where('product_id', $product->id)->count();
+        // $relatedOrders = OrderDetail::where('product_id', $product->id)->count();
+
+        $related = [];
+
+        if ($relatedPurchases > 0) {
+            $related[] = "$relatedPurchases pembelian";
+        }
+
+        // if ($relatedOrders > 0) {
+        //     $related[] = "$relatedOrders pesanan";
+        // }
+
+        return response()->json([
+            'related' => $related,
+        ]);
+    }
+    public function relationshipDetails($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $relatedPurchases = PurchaseDetail::with('purchase')
+            ->where('product_id', $product->id)
+            ->get(['id', 'purchase_id', 'quantity', 'created_at'])
+            ->map(function ($purchaseDetail) {
+                return [
+                    'id' => $purchaseDetail->id,
+                    'purchase_id' => $purchaseDetail->purchase_id,
+                    'quantity' => $purchaseDetail->quantity,
+                    'date' => $purchaseDetail->created_at->format('Y-m-d'),
+                ];
+            });
+
+        // $relatedOrders = OrderDetail::with('order')
+        //     ->where('product_id', $product->id)
+        //     ->get(['id', 'order_id', 'quantity', 'created_at'])
+        //     ->map(function ($orderDetail) {
+        //         return [
+        //             'id' => $orderDetail->id,
+        //             'order_id' => $orderDetail->order_id,
+        //             'quantity' => $orderDetail->quantity,
+        //             'date' => $orderDetail->created_at->format('Y-m-d'),
+        //         ];
+        //     });
+
+        return response()->json([
+            'purchases' => $relatedPurchases,
+            // 'orders' => $relatedOrders,
+        ]);
+    }
+
 }

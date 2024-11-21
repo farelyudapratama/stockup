@@ -35,6 +35,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products/{id}/edit', [Controllers\ProductController::class, 'edit'])->middleware('userAkses:admin', 'userAkses:stocker')->name('products.edit');
     Route::put('/products/{id}', [Controllers\ProductController::class, 'update'])->middleware('userAkses:admin', 'userAkses:stocker')->name('products.update');
     Route::delete('/products/{id}', [Controllers\ProductController::class, 'destroy'])->middleware('userAkses:admin', 'userAkses:stocker')->name('products.destroy');
+    Route::get('/products/{id}/relationships', [ProductController::class, 'relationships']);
+    Route::get('/products/{id}/relationship-details', [ProductController::class, 'relationshipDetails']);
+
 });
 
 Route::get('/vendors', [Controllers\VendorController::class, 'index'])->name('vendors.index');
