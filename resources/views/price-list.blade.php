@@ -70,7 +70,8 @@
                                 <td class="py-3 px-4">
                                     <div class="flex gap-4 justify-center">
                                         <!-- Edit -->
-                                        <a href="" class="text-blue-600 hover:text-blue-900">
+                                        <a href="{{ route('prices.edit', $product->id) }}"
+                                            class="text-blue-600 hover:text-blue-900">
                                             <span class="hidden sm:inline"> Edit</span>
                                             <i class="fas fa-edit sm:hidden"></i>
                                         </a>

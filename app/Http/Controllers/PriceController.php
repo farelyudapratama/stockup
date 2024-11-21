@@ -52,6 +52,29 @@ class PriceController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return view('price-edit', compact('product'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'price' => 'required',
+        ]);
+
+        $formattedPrice = (float) preg_replace('/[^\d]/', '', $request->price);
+
+        ProductPrice::create([
+            'product_id' => $id,
+            'price' => $formattedPrice,
+        ]);
+
+        return redirect()->route('prices.index')->with('success', 'Harga berhasil ditambahkan.');
+    }
+
     public function destroy($id)
     {
         try {

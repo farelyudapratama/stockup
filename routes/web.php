@@ -51,6 +51,8 @@ Route::put('/vendors/{id}', [Controllers\VendorController::class, 'update'])->na
 Route::get('/prices', [Controllers\PriceController::class, 'index'])->name('prices.index');
 Route::get('/price/add', [Controllers\PriceController::class, 'create'])->name('prices.create');
 Route::post('/prices', [Controllers\PriceController::class, 'store'])->name('prices.store');
+Route::get('/prices/{id}/edit', [Controllers\PriceController::class, 'edit'])->name('prices.edit');
+Route::post('/prices/{id}', [Controllers\PriceController::class, 'update'])->name('prices.update');
 Route::delete('/prices/{id}', [Controllers\PriceController::class, 'destroy'])->name('prices.destroy');
 
 Route::get('/purchase/add', [PurchaseController::class, 'create'])->name('purchases.create');
