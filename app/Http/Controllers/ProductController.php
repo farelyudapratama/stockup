@@ -132,8 +132,7 @@ class ProductController extends Controller
             ->where('changed_field', 'current_stock')
             ->where('created_at', '<=', $endDate)
             ->orderBy('created_at')
-            ->get()
-            ->unique('created_at');
+            ->get();
 
         // Filter perubahan yang terjadi dalam rentang waktu yang diminta
         $changesInPeriod = $stockChanges->filter(function ($change) use ($startDate, $endDate) {
