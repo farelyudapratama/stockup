@@ -34,7 +34,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
                             <select name="products[0][product_id]"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                 required>
                                 <option value="">Pilih Produk</option>
                                 @foreach ($products as $product)
@@ -94,38 +94,43 @@
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const addProductButton = document.getElementById('add-product');
-            const allProducts = @json($products); // Ambil semua produk dari server
+            const allProducts = @json($products);
 
-            // Fungsi untuk menambah produk baru
             addProductButton.addEventListener('click', function() {
+                if (productsContainer.children.length >= allProducts.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Semua produk sudah dipilih.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
                 const index = productsContainer.children.length;
                 const productItem = `
-                    <div class="product-item grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4" data-index="${index}">
+                    <div class="product-item grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label for="product_id" class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
                             <select name="products[${index}][product_id]" class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" required>
                                 <option value="">Pilih Produk</option>
                                 ${allProducts.map(product => `<option value="${product.id}">${product.name}</option>`).join('')}
                             </select>
                         </div>
-    
                         <div>
-                            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
                             <input type="number" name="products[${index}][quantity]" required min="1"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                 placeholder="Masukkan jumlah">
                         </div>
-    
                         <div>
-                            <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
                             <input type="text" name="products[${index}][unit_price]" required min="0" step="0.01"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                 placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
                         </div>
-    
                         <div class="flex items-center">
                             <button type="button" class="remove-product text-red-500 hover:text-red-700">
-                                <i class="fas fa-trash-alt"></i> <!-- Ikon Font Awesome -->
+                                <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
                     </div>
@@ -136,46 +141,58 @@
                 checkRemoveButtonState();
             });
 
-            // Fungsi untuk menghapus produk yang sudah dipilih dari dropdown
             function updateProductOptions() {
-                const selectedProducts = Array.from(document.querySelectorAll('.product-select')).map(select =>
-                    select.value);
+                const selectedProducts = new Set(
+                    Array.from(document.querySelectorAll('.product-select')).map(select => select.value)
+                );
+
                 document.querySelectorAll('.product-select').forEach(select => {
                     const currentValue = select.value;
-                    select.innerHTML = `<option value="">Pilih Produk</option>`;
+                    const options = [`<option value="">Pilih Produk</option>`];
+
                     allProducts.forEach(product => {
-                        if (!selectedProducts.includes(product.id.toString()) || product.id
+                        if (!selectedProducts.has(product.id.toString()) || product.id
                             .toString() === currentValue) {
-                            select.innerHTML +=
-                                `<option value="${product.id}" ${currentValue == product.id ? 'selected' : ''}>${product.name}</option>`;
+                            options.push(
+                                `<option value="${product.id}" ${currentValue === product.id.toString() ? 'selected' : ''}>
+                                    ${product.name}
+                                </option>`
+                            );
+                        } else {
+                            options.push(
+                                `<option value="${product.id}" disabled>
+                                    ${product.name} (Sudah dipilih)
+                                </option>`
+                            );
                         }
                     });
+
+                    select.innerHTML = options.join('');
                 });
             }
 
-            // Fungsi untuk menghapus produk dari daftar
             function attachRemoveEvent() {
                 document.querySelectorAll('.remove-product').forEach(button => {
                     button.addEventListener('click', function() {
-                        const productItem = this.closest('.product-item');
-                        productItem.remove();
+                        this.closest('.product-item').remove();
                         updateProductOptions();
                         checkRemoveButtonState();
                     });
                 });
             }
 
-            // Fungsi untuk memeriksa apakah tombol remove harus di-disable
             function checkRemoveButtonState() {
                 const removeButtons = document.querySelectorAll('.remove-product');
-                if (productsContainer.children.length === 1) {
-                    removeButtons.forEach(button => button.disabled = true);
-                } else {
-                    removeButtons.forEach(button => button.disabled = false);
-                }
+                const disable = productsContainer.children.length <= 1;
+                removeButtons.forEach(button => button.disabled = disable);
             }
 
-            // Inisialisasi awal
+            function formatInputRupiah(input) {
+                let value = input.value.replace(/[^0-9]/g, '');
+                value = new Intl.NumberFormat('id-ID').format(value);
+                input.value = value;
+            }
+
             updateProductOptions();
             attachRemoveEvent();
             checkRemoveButtonState();

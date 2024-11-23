@@ -77,11 +77,10 @@
                                     <a href="{{ route('vendors.edit', $vendor->id) }}"
                                         class="text-blue-600 hover:text-blue-900"><i class="fas fa-edit"></i> Edit</a>
                                     <form action="{{ route('vendors.destroy', $vendor->id) }}" method="POST"
-                                        class="inline-block ml-4">
+                                        class="inline-block ml-4 delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900"
-                                            onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                        <button type="submit" class="text-red-600 hover:text-red-900 delete-btn">
                                             <i class="fas fa-trash"></i> Hapus
                                         </button>
                                     </form>
@@ -133,6 +132,27 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const form = button.closest('.delete-form');
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Tindakan ini tidak dapat dibatalkan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',

@@ -77,11 +77,10 @@
                                         </a>
                                         <!-- Hapus -->
                                         <form action="{{ route('prices.destroy', $product->id) }}" method="POST"
-                                            class="inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus semua harga untuk produk ini?')">
+                                            class="delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <button type="button" class="text-red-600 hover:text-red-900 delete-btn">
                                                 <span class="hidden sm:inline">Hapus</span>
                                                 <i class="fas fa-trash sm:hidden"></i>
                                             </button>
@@ -134,22 +133,46 @@
     </div>
 
     <script>
-        @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses',
-                text: '{{ session('success') }}',
-                confirmButtonText: 'OK'
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const form = button.closest('.delete-form');
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Tindakan ini tidak dapat dibatalkan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
             });
-        @endif
 
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-                text: '{{ session('error') }}',
-                confirmButtonText: 'OK'
-            });
-        @endif
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
     </script>
 </x-layout>

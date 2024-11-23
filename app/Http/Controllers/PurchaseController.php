@@ -69,7 +69,7 @@ class PurchaseController extends Controller
 
             return redirect()->back()->with('success', 'Pembelian berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to add purchase. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan pembelian. Error: ' . $e->getMessage());
         }
     }
 
@@ -182,9 +182,9 @@ class PurchaseController extends Controller
                 ]);
             }
 
-            return redirect()->route('purchases.index')->with('success', 'Purchase updated successfully.');
+            return redirect()->route('purchases.index')->with('success', 'Pembelian berhasil diubah.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update purchase. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal mengubah pembelian. Error: ' . $e->getMessage());
         }
     }
 
@@ -212,9 +212,9 @@ class PurchaseController extends Controller
 
             $purchase->delete();
 
-            return redirect()->back()->with('success', 'Purchase deleted successfully.');
+            return redirect()->back()->with('success', 'Pembelian berhasil dihapus.');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete purchase. Error: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Gagal menghapus pembelian. Error: ' . $e->getMessage()], 500);
         }
     }
 }

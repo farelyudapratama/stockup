@@ -122,6 +122,15 @@
 
             // Fungsi untuk menambah produk baru
             addProductButton.addEventListener('click', function() {
+                if (productsContainer.children.length >= allProducts.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Peringatan',
+                        text: 'Semua produk sudah dipilih.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
                 const index = productsContainer.children.length;
                 const productItem = `
                     <div class="product-item grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4" data-index="${index}">
@@ -142,9 +151,9 @@
     
                         <div>
                             <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
-                            <input type="number" name="products[${index}][unit_price]" required min="0" step="0.01"
+                            <input type="text" name="products[${index}][unit_price]" required min="0" step="0.01"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                placeholder="Masukkan harga">
+                                placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
                         </div>
     
                         <div class="flex items-center">
@@ -162,18 +171,32 @@
 
             // Fungsi untuk menghapus produk yang sudah dipilih dari dropdown
             function updateProductOptions() {
-                const selectedProducts = Array.from(document.querySelectorAll('.product-select')).map(select =>
-                    select.value);
+                const selectedProducts = new Set(
+                    Array.from(document.querySelectorAll('.product-select')).map(select => select.value)
+                );
+
                 document.querySelectorAll('.product-select').forEach(select => {
                     const currentValue = select.value;
-                    select.innerHTML = `<option value="">Pilih Produk</option>`;
+                    const options = [`<option value="">Pilih Produk</option>`];
+
                     allProducts.forEach(product => {
-                        if (!selectedProducts.includes(product.id.toString()) || product.id
+                        if (!selectedProducts.has(product.id.toString()) || product.id
                             .toString() === currentValue) {
-                            select.innerHTML +=
-                                `<option value="${product.id}" ${currentValue == product.id ? 'selected' : ''}>${product.name}</option>`;
+                            options.push(
+                                `<option value="${product.id}" ${currentValue === product.id.toString() ? 'selected' : ''}>
+                                    ${product.name}
+                                </option>`
+                            );
+                        } else {
+                            options.push(
+                                `<option value="${product.id}" disabled>
+                                    ${product.name} (Sudah dipilih)
+                                </option>`
+                            );
                         }
                     });
+
+                    select.innerHTML = options.join('');
                 });
             }
 

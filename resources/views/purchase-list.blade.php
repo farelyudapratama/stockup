@@ -154,7 +154,7 @@
                             </div>
 
                             <!-- Desktop/Tablet Table View -->
-                            <div class="hidden sm:grid sm:grid-cols-6 hover:bg-gray-100">
+                            <div class="hidden sm:grid sm:grid-cols-6 hover:bg-gray-300">
                                 <div class="py-3 px-4">{{ $purchases->firstItem() + $index }}</div>
                                 <div class="py-3 px-4">{{ $purchase->id }}</div>
                                 <div class="py-3 px-4">{{ $purchase->vendor->name }}</div>
@@ -166,11 +166,14 @@
                                         <a href="{{ route('purchases.edit', $purchase->id) }}"
                                             class="text-blue-600 hover:text-blue-900">Edit</a>
                                         <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus pembelian ini?')">
+                                            class="delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-900">Hapus</button>
+                                            <button type="button"
+                                                class="delete-button text-red-600 hover:text-red-900"
+                                                data-url="{{ route('purchases.destroy', $purchase->id) }}">
+                                                Hapus
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -234,4 +237,61 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data ini akan dihapus secara permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.createElement('form');
+                            form.action = url;
+                            form.method = 'POST';
+
+                            const csrfToken = document.createElement('input');
+                            csrfToken.type = 'hidden';
+                            csrfToken.name = '_token';
+                            csrfToken.value = '{{ csrf_token() }}';
+
+                            const methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            methodInput.value = 'DELETE';
+
+                            form.appendChild(csrfToken);
+                            form.appendChild(methodInput);
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+            });
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
 </x-layout>
