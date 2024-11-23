@@ -16,11 +16,11 @@
     <x-navbar></x-navbar>
     <div class="flex h-screen">
         <x-sidebar class="flex-1"></x-sidebar>
-        <div class="flex-1 flex min-h-screen bg-gray-100 justify-center z-10">
+        <div class="flex-1 min-h-screen bg-gray-100 justify-center z-10">
             {{ $slot }}</div>
     </div>
 
-    <script>
+    {{-- <script>
         function formatRupiah(angka) {
             const cleanNumber = parseFloat(angka.toString().replace(/[^0-9]/g, ''));
 
@@ -87,7 +87,7 @@
         //         });
         //     @endif
         // });
-    </script>
+    </script> --}}
 </body>
 
 </html>

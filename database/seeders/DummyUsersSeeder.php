@@ -17,26 +17,30 @@ class DummyUsersSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
+                'email_verified_at' => now(),
                 'password' => bcrypt('admin'),
                 'role' => 'admin',
             ],
             [
                 'name' => 'Stocker',
                 'email' => 'Stocker@gmail.com',
+                'email_verified_at' => now(),
                 'password' => bcrypt('stocker'),
                 'role' => 'stocker',
             ],
             [
                 'name' => 'Purchaser',
                 'email' => 'purchase@gmail.com',
+                'email_verified_at' => now(),
                 'password' => bcrypt('purchase'),
                 'role' => 'purchaser',
             ],
             [
-                'name' => 'Sales',
-                'email' => 'sales@gmail.com',
-                'password' => bcrypt('sales'),
-                'role' => 'sales',
+                'name' => 'Seller',
+                'email' => 'seller@gmail.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt('seller'),
+                'role' => 'seller',
             ],
         ];
 

@@ -21,7 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [Controllers\AdminController::class, 'admin'])->middleware('userAkses:admin');
     Route::get('/stocker', [Controllers\AdminController::class, 'stocker'])->middleware('userAkses:stocker');
     Route::get('/purchaser', [Controllers\AdminController::class, 'purchaser'])->middleware('userAkses:purchaser');
-    Route::get('/sales', [Controllers\AdminController::class, 'sales'])->middleware('userAkses:sales');
+    Route::get('/seller', [Controllers\AdminController::class, 'seller'])->middleware('userAkses:seller');
     Route::get('/logout', [SesiController::class, 'logout']);
 
     Route::get('/products', [Controllers\ProductController::class, 'index'])->middleware('userAkses:admin', 'userAkses:stocker')->name('products.index');
@@ -65,6 +65,10 @@ Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.
 Route::get('/purchases/{id}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
 Route::put('/purchases/{id}', [PurchaseController::class, 'update'])->name('purchases.update');
 Route::delete('/purchases/{id}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');
+
+Route::get('/sales', [Controllers\SaleController::class, 'index'])->name('sales.index');
+Route::get('/sale/add', [Controllers\SaleController::class, 'create'])->name('sales.create');
+Route::post('/sales', [Controllers\SaleController::class, 'store'])->name('sales.store');
 
 Route::get('/reports/purchase', [PurchaseReportController::class, 'index'])->name('reports.purchase');
 Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.purchaseexport');

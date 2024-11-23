@@ -15,8 +15,8 @@ class AdminController extends Controller
             return $this->stocker();
         } elseif (Auth::user()->level == "purchaser") {
             return $this->purchaser();
-        } elseif (Auth::user()->level == "sales") {
-            return $this->sales();
+        } elseif (Auth::user()->level == "seller") {
+            return $this->seller();
         } else {
             return view('welcome');
         }
@@ -35,7 +35,7 @@ class AdminController extends Controller
     {
         return view('welcome');
     }
-    function sales()
+    function seller()
     {
         return view('welcome');
     }

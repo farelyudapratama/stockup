@@ -33,7 +33,7 @@
                             Produk</a>
                     @endif
 
-                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'sales')
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'seller')
                         <a href="/prices"
                             class=" {{ request()->is('prices') ? 'bg-cyan-800' : 'text-white ' }} block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                             Harga</a>
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="mb-2">
-                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'purchaser' || auth()->user()->role == 'sales')
+                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'purchaser' || auth()->user()->role == 'seller')
                     <button @click="openFolders['Kelola Transaksi'] = !openFolders['Kelola Transaksi']"
                         class="{{ request()->is(['purchases']) ? 'bg-cyan-700' : 'text-white ' }} text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                         <span>Transaksi</span>
@@ -65,7 +65,7 @@
                         </div>
                     @endif
 
-                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'sales')
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'seller')
                         <div x-show="openFolders['Kelola Transaksi']" x-transition class="pl-4">
                             <a href="/sales"
                                 class="{{ request()->is('sales') ? 'bg-cyan-800' : 'text-white ' }} text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">

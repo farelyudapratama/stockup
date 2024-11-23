@@ -68,7 +68,7 @@ class SesiController extends Controller
             'admin' => '/admin',
             'stocker' => '/stocker',
             'purchaser' => '/purchaser',
-            'sales' => '/sales',
+            'seller' => '/seller',
         ];
 
         $userRole = Auth::user()->role;

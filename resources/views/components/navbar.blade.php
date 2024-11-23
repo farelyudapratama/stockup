@@ -100,21 +100,24 @@
 
                         <!-- Collapsible Pembelian -->
                         <div class="px-4 py-2 text-gray-700">
-                            <button @click="openFolders['Pembelian'] = !openFolders['Pembelian']"
+                            <button @click="openFolders['Transaksi'] = !openFolders['Transaksi']"
                                 class="flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-100 focus:outline-none transition-colors duration-200">
-                                <span>Pembelian</span>
+                                <span>Transaksi</span>
                                 <svg class="w-4 h-4 transition-transform duration-200"
-                                    :class="{ 'rotate-90': openFolders['Pembelian'] }"
+                                    :class="{ 'rotate-90': openFolders['Transaksi'] }"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
-                            <div x-show="openFolders['Pembelian']" x-transition class="pl-4">
+                            <div x-show="openFolders['Transaksi']" x-transition class="pl-4">
                                 <a href="/purchase/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Pembelian</a>
+                                <a href="/sale/add"
+                                    class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
+                                    Penjualan</a>
                             </div>
                         </div>
 
