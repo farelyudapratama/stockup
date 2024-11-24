@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductHistory;
+use App\Models\ProductPrice;
 use App\Models\Sales;
 use App\Models\SaleDetail;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class SaleController extends Controller
 
     public function create()
     {
-        $products = Product::all();
+        $products = Product::with('productPrices')->get();
 
         return view('sale-add', compact('products'));
     }

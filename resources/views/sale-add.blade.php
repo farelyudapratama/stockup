@@ -49,7 +49,7 @@
                                     <input type="text" name="products[{{ $index }}][unit_price]"
                                         value="{{ $product['unit_price'] }}" required
                                         class="price-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                        placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
+                                        placeholder="Masukkan harga">
                                 </div>
                                 <div>
                                     <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub
@@ -66,40 +66,43 @@
                             </div>
                         @endforeach
                     @else
-                        <div class="product-item grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
-                                <select name="products[0][product_id]"
-                                    class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    required>
-                                    <option value="">Pilih Produk</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
-                                <input type="number" name="products[0][quantity]" required min="1"
-                                    class="quantity-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    placeholder="Masukkan jumlah">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
-                                <input type="text" name="products[0][unit_price]" required
-                                    class="price-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
-                            </div>
-                            <div>
-                                <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub
-                                    Total</label>
-                                <input type="text" id="sub_total" name="sub_total" readonly
-                                    class="sub-total w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none transition duration-150 ease-in-out"
-                                    placeholder="Otomatis">
-                            </div>
+                    <div class="product-item grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
+                            <select name="products[0][product_id]"
+                                class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                required>
+                                <option value="">Pilih Produk</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}"
+                                        data-price="{{ optional($product->productPrices->first())->price ?? 0 }}">
+                                        {{ $product->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
+                            <input type="number" name="products[0][quantity]" required min="1"
+                                class="quantity-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                placeholder="Masukkan jumlah">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+                            <input type="text" name="products[0][unit_price]" required readonly
+                                class="price-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                placeholder="Harga akan terisi otomatis">
+                        </div>
+                        <div>
+                            <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub
+                                Total</label>
+                            <input type="text" name="sub_total" readonly
+                                class="sub-total w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none transition duration-150 ease-in-out"
+                                placeholder="Otomatis">
+                        </div>
+                    </div>
                     @endif
                 </div>
 
@@ -136,7 +139,30 @@
         document.addEventListener('DOMContentLoaded', function() {
             const productsContainer = document.getElementById('products-container');
             const addProductButton = document.getElementById('add-product');
-            const allProducts = @json($products);
+            allProducts = @json(
+                $products->map(function ($product) {
+                        return [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'price' => optional($product->productPrices->last())->price ?? 0
+                        ];
+                    })->values());
+
+            function handleProductSelection(select) {
+                const productItem = select.closest('.product-item');
+                const priceInput = productItem.querySelector('.price-input');
+                const selectedOption = select.options[select.selectedIndex];
+                const price = selectedOption.dataset.price;
+
+                if (price) {
+                    const formattedPrice = formatRupiah(price);
+                    priceInput.value = formattedPrice;
+                } else {
+                    priceInput.value = '';
+                }
+
+                calculateTotal();
+            }
 
             // Tambah produk baru
             addProductButton.addEventListener('click', function() {
@@ -149,6 +175,7 @@
                     });
                     return;
                 }
+
                 const index = productsContainer.children.length;
                 const productItem = `
                     <div class="product-item grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
@@ -156,7 +183,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
                             <select name="products[${index}][product_id]" class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" required>
                                 <option value="">Pilih Produk</option>
-                                ${allProducts.map(product => `<option value="${product.id}">${product.name}</option>`).join('')}
+                                ${allProducts.map(product => `<option value="${product.id}" data-price="${product.price}">${product.name}</option>`).join('')}
                             </select>
                         </div>
                         <div>
@@ -167,9 +194,9 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
-                            <input type="text" name="products[${index}][unit_price]" required
+                            <input type="text" name="products[${index}][unit_price]" required readonly
                                 class="price-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                placeholder="Masukkan harga" oninput="formatInputRupiah(this)">
+                                placeholder="Harga akan terisi otomatis">
                         </div>
                         <div>
                             <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub Total</label>
@@ -183,7 +210,13 @@
                             </button>
                         </div>
                     </div>`;
+
                 productsContainer.insertAdjacentHTML('beforeend', productItem);
+
+                const newSelect = productsContainer.lastElementChild.querySelector('.product-select');
+                newSelect.addEventListener('change', function() {
+                    handleProductSelection(this);
+                });
 
                 updateProductOptions();
                 addEventListenersToInputs();
@@ -204,7 +237,7 @@
                         if (!selectedProducts.has(product.id.toString()) || product.id
                             .toString() === currentValue) {
                             options.push(
-                                `<option value="${product.id}" ${currentValue === product.id.toString() ? 'selected' : ''}>
+                                `<option value="${product.id}" data-price="${product.price}" ${currentValue === product.id.toString() ? 'selected' : ''}>
                                     ${product.name}
                                 </option>`
                             );
@@ -219,7 +252,12 @@
                 });
             }
 
-            // Hapus produk
+            document.querySelectorAll('.product-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    handleProductSelection(this);
+                });
+            });
+
             productsContainer.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-product') || e.target.closest('.remove-product')) {
                     e.target.closest('.product-item').remove();
@@ -228,14 +266,6 @@
                 }
             });
 
-            // Format input harga dalam format Rupiah
-            function formatInputRupiah(input) {
-                let value = input.value.replace(/[^0-9]/g, '');
-                value = new Intl.NumberFormat('id-ID').format(value);
-                input.value = value;
-            }
-
-            // Hitung total keseluruhan
             function calculateTotal() {
                 const productItems = document.querySelectorAll('.product-item');
                 let total = 0;
@@ -253,24 +283,29 @@
                 document.getElementById('total_amount').value = formatRupiah(total.toString());
             }
 
-            // Konversi format Rupiah ke angka
-            function parseRupiahToNumber(rupiah) {
-                return parseFloat(rupiah.replace(/[Rp,.]/g, '').replace(',', '.')) || 0;
+            function addEventListenersToInputs() {
+                document.querySelectorAll('.quantity-input').forEach(input => {
+                    input.addEventListener('input', calculateTotal);
+                });
+
+                document.querySelectorAll('.price-input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        this.value = formatRupiah(parseRupiahToNumber(this.value).toString());
+                        calculateTotal();
+                    });
+                });
             }
 
-            // Format Rupiah
+            function parseRupiahToNumber(rupiah) {
+                return parseFloat(rupiah.replace(/[^\d]/g, '')) || 0;
+            }
+
             function formatRupiah(angka) {
                 return new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                }).format(angka || 0);
-            }
-
-            function addEventListenersToInputs() {
-                document.querySelectorAll('.quantity-input, .price-input').forEach(input => {
-                    input.addEventListener('input', calculateTotal);
-                });
+                }).format(angka);
             }
 
             updateProductOptions();
@@ -294,8 +329,6 @@
                     confirmButtonText: 'OK'
                 });
             @endif
-
         });
     </script>
-
 </x-layout>
