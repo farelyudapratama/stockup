@@ -20,7 +20,7 @@
             {{ $slot }}</div>
     </div>
 
-    {{-- <script>
+    <script>
         function formatRupiah(angka) {
             const cleanNumber = parseFloat(angka.toString().replace(/[^0-9]/g, ''));
 
@@ -87,7 +87,7 @@
         //         });
         //     @endif
         // });
-    </script> --}}
+    </script>
 </body>
 
 </html>

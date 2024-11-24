@@ -91,10 +91,10 @@
                                     <span class="font-medium">Total:</span>
                                     <span>Rp{{ number_format($sale->total_amount, 2, ',', '.') }}</span>
                                 </div>
-                                <div class="flex justify-end gap-2 pt-2">
+                                {{-- <div class="flex justify-end gap-2 pt-2">
                                     <a href="{{ route('sales.show', $sale->id) }}"
                                         class="px-3 py-1 text-blue-600 hover:text-blue-900">Lihat Detail</a>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <!-- Desktop/Tablet Table View -->
@@ -103,10 +103,10 @@
                                 <div class="py-3 px-4">{{ $sale->buyer_name }}</div>
                                 <div class="py-3 px-4">{{ $sale->sale_date->format('d-m-Y') }}</div>
                                 <div class="py-3 px-4">Rp{{ number_format($sale->total_amount, 2, ',', '.') }}</div>
-                                <div class="py-3 px-4">
+                                {{-- <div class="py-3 px-4">
                                     <a href="{{ route('sales.show', $sale->id) }}"
                                         class="text-blue-600 hover:text-blue-900">Lihat Detail</a>
-                                </div>
+                                </div> --}}
                             </div>
                         @empty
                             <div class="py-8 px-4 text-center text-gray-500">
