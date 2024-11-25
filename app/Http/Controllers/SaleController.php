@@ -101,4 +101,86 @@ class SaleController extends Controller
             return redirect()->back()->withInput()->with('error', 'Gagal menambahkan penjualan. Error: ' . $e->getMessage());
         }
     }
+
+    public function edit($id)
+    {
+        $sale = Sales::with('details')->findOrFail($id);
+        $products = Product::all();
+
+        return view('sale-edit', compact('sale',  'products'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'buyer_name' => 'required',
+            'sale_date' => 'required|date',
+            'total_amount' => 'required',
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.unit_price' => 'required',
+        ]);
+
+        try {
+            $sale = Sales::findOrFail($id);
+            $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
+
+            $sale->update([
+                'buyer_name' => $request->buyer_name,
+                'sale_date' => $request->sale_date,
+                'total_amount' => $totalAmount,
+            ]);
+
+            foreach ($sale->details as $detail) {
+                $product = Product::findOrFail($detail->product_id);
+                $oldStock = $product->current_stock;
+
+                $product->current_stock += $detail->quantity;
+                $product->save();
+
+                ProductHistory::create([
+                    'product_id' => $product->id,
+                    'changed_field' => 'current_stock',
+                    'old_value' => $oldStock,
+                    'new_value' => $product->current_stock,
+                    'reason_changed' => 'Sale updated (detail removed)',
+                ]);
+
+                $detail->delete();
+            }
+
+            foreach ($request->products as $productData) {
+                $unitPrice = (float) preg_replace('/[^\d]/', '', $productData['unit_price']);
+                $saleDetail = SaleDetail::create([
+                    'sales_id' => $sale->id,
+                    'product_id' => $productData['product_id'],
+                    'quantity' => $productData['quantity'],
+                    'unit_price' => $unitPrice,
+                    'subtotal' => $unitPrice * $productData['quantity'],
+                ]);
+
+                if ($saleDetail->wasRecentlyCreated) {
+                    $product->current_stock -= $productData['quantity'];
+                } else {
+                    $oldQuantity = $saleDetail->getOriginal('quantity');
+                    $product->current_stock += $oldQuantity - $productData['quantity'];
+                }
+
+                $product->save();
+
+                ProductHistory::create([
+                    'product_id' => $product->id,
+                    'changed_field' => 'current_stock',
+                    'old_value' => $product->current_stock + ($saleDetail->wasRecentlyCreated ? $productData['quantity'] : $oldQuantity),
+                    'new_value' => $product->current_stock,
+                    'reason_changed' => 'Sale updated',
+                ]);
+            }
+
+            return redirect()->route('sales.index')->with('success', 'Penjualan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui penjualan. Error: ' . $e->getMessage());
+        }
+    }
 }
