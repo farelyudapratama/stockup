@@ -7,6 +7,7 @@ use App\Models\ProductHistory;
 use App\Models\ProductPrice;
 use App\Models\Sales;
 use App\Models\SaleDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class SaleController extends Controller
@@ -226,5 +227,14 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus penjualan. Error: ' . $e->getMessage());
         }
+    }
+
+    public function exportPDF($id)
+    {
+        $sale = Sales::with('details.product')->findOrFail($id);
+
+        $pdf = Pdf::loadView('sales.pdf', compact('sale'));
+
+        return $pdf->download('detail_penjualan_' . $sale->id . '.pdf');
     }
 }

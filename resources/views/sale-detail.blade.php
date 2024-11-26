@@ -2,13 +2,9 @@
     <div class="container mx-auto px-4 py-8">
         <div class="mb-6">
             <form x-data="{ query: '' }" @submit.prevent="redirectToDetail" class="flex items-center">
-                <input 
-                    type="text" 
-                    x-model="query" 
-                    placeholder="Cari ID penjualan..." 
+                <input type="text" x-model="query" placeholder="Cari ID penjualan..."
                     class="w-full px-4 py-1.5 border rounded-l-lg border-sky-500 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600">
-                <button 
-                    type="submit" 
+                <button type="submit"
                     class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition duration-300">
                     <i class="fas fa-search"></i>
                 </button>
@@ -108,6 +104,14 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <a href="{{ route('sales.exportPDF', $sale->id) }}">
+                        <button @click="printDetail"
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                            <i class="fas fa-print mr-2"></i>Cetak
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>

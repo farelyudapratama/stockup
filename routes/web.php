@@ -72,7 +72,8 @@ Route::post('/sales', [Controllers\SaleController::class, 'store'])->name('sales
 Route::get('/sales/{id}/edit', [Controllers\SaleController::class, 'edit'])->name('sales.edit');
 Route::put('/sales/{id}', [Controllers\SaleController::class, 'update'])->name('sales.update');
 Route::delete('/sales/{id}', [Controllers\SaleController::class, 'destroy'])->name('sales.destroy');
-Route::get('/sales/{id}/detail', [App\Http\Controllers\SaleController::class, 'detail'])->name('sales.detail');
+Route::get('/sales/{id}/detail', [Controllers\SaleController::class, 'detail'])->name('sales.detail');
+Route::get('/sales/{id}/export-pdf', [Controllers\SaleController::class, 'exportPDF'])->name('sales.exportPDF');
 
 Route::get('/reports/purchase', [PurchaseReportController::class, 'index'])->name('reports.purchase');
 Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.purchaseexport');

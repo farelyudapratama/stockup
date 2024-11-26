@@ -180,11 +180,13 @@ class PurchasesExport implements FromCollection, WithHeadings, WithMapping, With
 
                 // Vendor headers
                 foreach ($this->vendorRows as $row) {
-                    $sheet->mergeCells("A{$row}:G{$row}");
                     $sheet->getStyle("A{$row}")->getFont()->setBold(true);
                     $sheet->getStyle("A{$row}")->getFill()
                         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                         ->getStartColor()->setRGB('F3F4F6');
+
+                    $sheet->getStyle("A{$row}:G{$row}")->getAlignment()
+                        ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER_CONTINUOUS);
                 }
 
                 // Merge cells for total keseluruhan
@@ -202,7 +204,7 @@ class PurchasesExport implements FromCollection, WithHeadings, WithMapping, With
                 $sheet->getColumnDimension('E')->setWidth(20); // Harga Satuan
                 $sheet->getColumnDimension('F')->setWidth(20); // Total
                 $sheet->getColumnDimension('G')->setWidth(20); // Total Keseluruhan
-    
+
                 // Align numbers to right
                 $sheet->getStyle('D6:G' . ($this->rowCount + 1))
                     ->getAlignment()
