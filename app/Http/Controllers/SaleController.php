@@ -105,13 +105,14 @@ class SaleController extends Controller
     public function edit($id)
     {
         $sale = Sales::with('details')->findOrFail($id);
-        $products = Product::all();
+        $products = Product::with('productPrices')->get();
 
         return view('sale-edit', compact('sale',  'products'));
     }
 
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         $request->validate([
             'buyer_name' => 'required',
             'sale_date' => 'required|date',
@@ -125,7 +126,6 @@ class SaleController extends Controller
         try {
             $sale = Sales::findOrFail($id);
             $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
-
             $sale->update([
                 'buyer_name' => $request->buyer_name,
                 'sale_date' => $request->sale_date,
@@ -181,6 +181,37 @@ class SaleController extends Controller
             return redirect()->route('sales.index')->with('success', 'Penjualan berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui penjualan. Error: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $sale = Sales::findOrFail($id);
+
+            foreach ($sale->details as $detail) {
+                $product = Product::findOrFail($detail->product_id);
+                $oldStock = $product->current_stock;
+
+                $product->current_stock += $detail->quantity;
+                $product->save();
+
+                ProductHistory::create([
+                    'product_id' => $product->id,
+                    'changed_field' => 'current_stock',
+                    'old_value' => $oldStock,
+                    'new_value' => $product->current_stock,
+                    'reason_changed' => 'Sale deleted',
+                ]);
+
+                $detail->delete();
+            }
+
+            $sale->delete();
+
+            return redirect()->route('sales.index')->with('success', 'Penjualan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus penjualan. Error: ' . $e->getMessage());
         }
     }
 }

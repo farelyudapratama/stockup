@@ -10,14 +10,15 @@
                 @method('PUT')
 
                 <div>
-                    <label for="customer" class="block text-sm font-medium text-gray-700 mb-1">Pelanggan</label>
-                    <input type="text" name="customer" value="{{ old('customer', $sale->buyer_name) }}"
+                    <label for="buyer_name" class="block text-sm font-medium text-gray-700 mb-1">Pelanggan</label>
+                    <input type="text" name="buyer_name" value="{{ old('customer', $sale->buyer_name) }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                         placeholder="Masukkan nama pelanggan" required>
                 </div>
                 <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                    <input type="date" name="date" value="{{ old('sale_date', $sale->sale_date->format('Y-m-d')) }}"
+                    <label for="sale_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                    <input type="date" id="sale_date" name="sale_date"
+                        value="{{ old('sale_date', $sale->sale_date->format('Y-m-d')) }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                         required>
                 </div>
@@ -25,7 +26,8 @@
                     @foreach ($sale->details as $index => $detail)
                         <div class="product-item grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
+                                <label for="product_id"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Produk</label>
                                 <select name="products[{{ $index }}][product_id]"
                                     class="product-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                     required>
@@ -40,21 +42,24 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
+                                <label for="quantity"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Kuantitas</label>
                                 <input type="number" name="products[{{ $index }}][quantity]"
                                     value="{{ $detail->quantity }}" required min="1"
                                     class="quantity-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                     placeholder="Masukkan jumlah">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+                                <label for="unit_price"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
                                 <input type="text" name="products[{{ $index }}][unit_price]"
                                     value="{{ $detail->unit_price }}" required readonly
                                     class="price-input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                                     placeholder="Harga akan terisi otomatis setelah pilih produk">
                             </div>
                             <div>
-                                <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub Total</label>
+                                <label for="sub_total" class="block text-sm font-medium text-gray-700 mb-1">Sub
+                                    Total</label>
                                 <input type="text" name="sub_total" readonly
                                     class="sub-total w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none transition duration-150 ease-in-out"
                                     placeholder="Otomatis">

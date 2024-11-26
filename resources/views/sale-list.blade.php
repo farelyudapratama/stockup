@@ -244,4 +244,23 @@
             </div>
         </div>
     </div>
+    <script>
+        @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: '{{ session('error_type') ?? 'error' }}',
+                    title: '{{ session('error_title') ?? 'Terjadi Kesalahan' }}',
+                    text: '{{ session('error') }}',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+    </script>
 </x-layout>
