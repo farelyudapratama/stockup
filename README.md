@@ -43,7 +43,7 @@ Pastikan Anda memiliki hal-hal berikut sebelum memulai:
    DB_CONNECTION=sqlite
    DB_DATABASE=/path/to/database/database.sqlite
    ```
-   <p style="color: yellow;">(Jangan lupa buat atau tambahkan file .sqlite anda di folder dabatase)</p>
+    $${\color{yellow}{\textsf{(Jangan\ lupa\ buat\ atau\ tambahkan\ file\ .sqlite\ anda\ di\ folder\ dabatase)}}}$$
 
 8. Jalankan migrasi dan seeder untuk menyiapkan tabel database:
    ```bash
