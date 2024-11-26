@@ -107,7 +107,7 @@ class SaleController extends Controller
         $sale = Sales::with('details')->findOrFail($id);
         $products = Product::with('productPrices')->get();
 
-        return view('sale-edit', compact('sale',  'products'));
+        return view('sale-edit', compact('sale', 'products'));
     }
 
     public function update(Request $request, $id)
@@ -181,6 +181,19 @@ class SaleController extends Controller
             return redirect()->route('sales.index')->with('success', 'Penjualan berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal memperbarui penjualan. Error: ' . $e->getMessage());
+        }
+    }
+
+    public function detail($id)
+    {
+        try {
+            $sale = Sales::with(['details.product', 'details.product.productPrices'])
+                ->findOrFail($id);
+
+            return view('sale-detail', compact('sale'));
+        } catch (\Exception $e) {
+            return redirect()->route('sales.index')
+                ->with('error', 'Penjualan tidak ditemukan.');
         }
     }
 
