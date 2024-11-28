@@ -25,6 +25,18 @@
                                 placeholder="Cari ID atau Pembeli...">
                         </div>
 
+                        <div class="space-y-2">
+                            <label for="start_date" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                            <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}"
+                                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+                    
+                        <div class="space-y-2">
+                            <label for="end_date" class="block text-sm font-medium text-gray-700">Tanggal Akhir</label>
+                            <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}"
+                                class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 text-sm">
+                        </div>
+
                         <!-- Entries per page -->
                         <div class="space-y-2">
                             <label for="entries" class="block text-sm font-medium text-gray-700">Tampilkan</label>
@@ -245,6 +257,26 @@
         </div>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+
+            endDateInput.addEventListener('change', function() {
+                if (this.value) {
+                    startDateInput.setAttribute('max', this.value);
+                } else {
+                    startDateInput.removeAttribute('max');
+                }
+            });
+
+            startDateInput.addEventListener('change', function() {
+                if (this.value) {
+                    endDateInput.setAttribute('min', this.value);
+                } else {
+                    endDateInput.removeAttribute('min');
+                }
+            });
+        });
         @if (session('success'))
                 Swal.fire({
                     icon: 'success',

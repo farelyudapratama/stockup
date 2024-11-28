@@ -14,12 +14,13 @@ class SaleController extends Controller
 {
     public function index(Request $request)
     {
-        $entries = $request->input('entries', 10); // Default pagination 10
-        $search = $request->input('search', '');  // Pencarian berdasarkan nama pembeli atau ID penjualan
+        $entries = $request->input('entries', 10);
+        $search = $request->input('search', '');
+        $startDate = $request->input('start_date', '');
+        $endDate = $request->input('end_date', '');
 
         $salesQuery = Sales::query();
 
-        // Pencarian berdasarkan ID penjualan atau nama pembeli
         if ($search) {
             $salesQuery->where(function ($query) use ($search) {
                 $query->where('buyer_name', 'like', '%' . $search . '%')
@@ -27,11 +28,19 @@ class SaleController extends Controller
             });
         }
 
+        if ($startDate && $endDate) {
+            $salesQuery->whereBetween('sale_date', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $salesQuery->where('sale_date', '>=', $startDate);
+        } elseif ($endDate) {
+            $salesQuery->where('sale_date', '<=', $endDate);
+        }
+
         $sales = $salesQuery->with('details.product')
             ->orderBy('sale_date', 'desc')
             ->paginate($entries);
 
-        return view('sale-list', compact('sales', 'search', 'entries'));
+        return view('sale-list', compact('sales', 'search', 'entries', 'startDate', 'endDate'));
     }
 
     public function create()
