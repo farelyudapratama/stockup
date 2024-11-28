@@ -76,7 +76,7 @@
             </div>
             <div class="mb-2">
                 <button @click="openFolders['Kelola Laporan'] = !openFolders['Kelola Laporan']"
-                    class="{{ request()->is(['reports/purchase', 'reports/stock']) ? 'bg-cyan-700' : 'text-white ' }} text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
+                    class="{{ request()->is(['reports/purchase', 'reports/sale','reports/stock']) ? 'bg-cyan-700' : 'text-white ' }} text-white flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                     <span>Laporan</span>
                     <svg class="w-4 h-4 transition-transform duration-200"
                         :class="{ 'rotate-90': openFolders['Kelola Laporan'] }" xmlns="http://www.w3.org/2000/svg"
@@ -90,9 +90,17 @@
                             class="{{ request()->is('reports/purchase') ? 'bg-cyan-800' : 'text-white ' }} text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                             Laporan Pembelian</a>
                     @endif
+                    
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'seller')
+                        <a href="/reports/sale"
+                            class="{{ request()->is('reports/sale') ? 'bg-cyan-800' : 'text-white ' }} text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
+                            Laporan Penjualan</a>
+                    @endif
+
                     <a href="/reports/stock"
                         class="text-white block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                         Laporan Stok</a>
+
                 </div>
             </div>
         </div>

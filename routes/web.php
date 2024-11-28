@@ -60,7 +60,6 @@ Route::delete('/prices/{id}', [Controllers\PriceController::class, 'destroy'])->
 
 Route::get('/purchase/add', [PurchaseController::class, 'create'])->name('purchases.create');
 Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
-
 Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
 Route::get('/purchases/{id}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
 Route::put('/purchases/{id}', [PurchaseController::class, 'update'])->name('purchases.update');
@@ -77,6 +76,9 @@ Route::get('/sales/{id}/export-pdf', [Controllers\SaleController::class, 'export
 
 Route::get('/reports/purchase', [PurchaseReportController::class, 'index'])->name('reports.purchase');
 Route::get('/reports/purchase/export', [PurchaseReportController::class, 'exportToExcel'])->name('reports.purchaseexport');
+
+Route::get('/reports/sale', [Controllers\SalesReportController::class, 'index'])->name('reports.sale');
+Route::get('/reports/sale/export', [Controllers\SalesReportController::class, 'export'])->name('reports.saleexport');
 
 Route::get('/reports/stock', [Controllers\StockReportController::class, 'index'])->name('reports.stock');
 Route::get('/reports/stock/export', [Controllers\StockReportController::class, 'export'])->name('reports.export');
