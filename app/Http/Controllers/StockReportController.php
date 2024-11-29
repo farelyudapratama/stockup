@@ -38,7 +38,7 @@ class StockReportController extends Controller
             ];
         });
 
-        return view('reports.stock', compact('products', 'chartData'));
+        return view('stock.stock', compact('products', 'chartData'));
     }
     public function export()
     {
