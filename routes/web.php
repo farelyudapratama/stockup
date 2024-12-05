@@ -82,3 +82,7 @@ Route::get('/reports/sale/export', [Controllers\SalesReportController::class, 'e
 
 Route::get('/reports/stock', [Controllers\StockReportController::class, 'index'])->name('reports.stock');
 Route::get('/reports/stock/export', [Controllers\StockReportController::class, 'export'])->name('reports.export');
+
+Route::get('/stock', [Controllers\StockReportController::class, 'index'])->name('stock.index');
+Route::post('/stock/add-in', [Controllers\StockReportController::class, 'addStockIn'])->name('stock.add-in');
+Route::post('/stock/add-out', [Controllers\StockReportController::class, 'addStockOut'])->name('stock.add-out');
