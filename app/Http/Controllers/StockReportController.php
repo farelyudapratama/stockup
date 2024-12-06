@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StockReportExport;
 use App\Models\Product;
 use App\Models\ProductHistory;
 use App\Models\SaleDetail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockReportController extends Controller
 {
@@ -96,5 +98,14 @@ class StockReportController extends Controller
             'startDate' => $startDate,
             'endDate' => $endDate
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $startDate = $request->input('start_date', now()->subMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->format('Y-m-d'));
+        $productId = $request->input('product_id', 'all');
+
+        return Excel::download(new StockReportExport($startDate, $endDate, $productId), 'stock_report.xlsx');
     }
 }

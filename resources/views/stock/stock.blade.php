@@ -77,7 +77,13 @@
                                 Filter
                             </button>
                         </form>
-
+                        <a href="{{ route('reports.export', ['start_date' => $startDate, 'end_date' => $endDate, 'product_id' => $selectedProductId]) }}"
+                            class="ml-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md inline-flex items-center gap-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                             </svg>
+                             Export Excel
+                         </a>
                         <!-- Stock Movement Table -->
                         <div class="mt-4 bg-white shadow rounded-lg p-4">
                             <table class="w-full">

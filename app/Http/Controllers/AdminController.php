@@ -24,7 +24,6 @@ class AdminController extends Controller
 
     function admin()
     {
-        $role = Auth::user()->role;
         return view('welcome');
     }
     function stocker()
