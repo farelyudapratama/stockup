@@ -32,28 +32,6 @@ class AdminController extends Controller
                 return redirect('/'); // Jika role tidak dikenal
         }
     }
-
-    // function admin()
-    // {
-    //     return $this->showStockInOut();
-    //     // return view('welcome');
-    // }
-    // function stocker()
-    // {
-    //     return $this->showStockInOut();
-    //     // return view('welcome');
-    // }
-    // function purchaser()
-    // {
-    //     return $this->showStockInOut();
-    //     // return view('welcome');
-    // }
-    // function seller()
-    // {
-    //     return $this->showStockInOut();
-    //     // return view('welcome');
-    // }
-
     function showWelcome()
     {
         $user = Auth::user();
