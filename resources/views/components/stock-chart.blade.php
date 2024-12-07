@@ -64,7 +64,7 @@
 </head>
 <body>
     <div id="container">
-        <h1>Stock Management Dashboard</h1>
+        <h1>Keluar Masuknya Produk Pada Tiap Bulan</h1>
         <div class="chart-controls">
             <select id="productSelect">
                 <option value="">All Products</option>
@@ -87,9 +87,9 @@
 
             // Color palette for better visual distinction
             const colorPalette = [
-                { in: 'rgba(75, 192, 192, 0.6)', out: 'rgba(255, 99, 132, 0.6)' },
-                { in: 'rgba(54, 162, 235, 0.6)', out: 'rgba(255, 159, 64, 0.6)' },
-                { in: 'rgba(153, 102, 255, 0.6)', out: 'rgba(255, 205, 86, 0.6)' }
+                { in: 'rgba(0, 123, 255, 0.6)', out: 'rgba(220, 53, 69, 0.6)' },
+                { in: 'rgba(40, 167, 69, 0.6)', out: 'rgba(255, 193, 7, 0.6)' },
+                { in: 'rgba(0, 42, 184, 0.6)', out: 'rgba(142, 0, 125, 0.6)' }
             ];
 
             // Populate product select
@@ -167,7 +167,10 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Monthly Stock Transactions'
+                                text: 'Grafik Stok Produk',
+                                font: {
+                                    size: 16
+                                }
                             },
                             tooltip: {
                                 callbacks: {
@@ -185,13 +188,13 @@
                             x: {
                                 title: { 
                                     display: true, 
-                                    text: 'Month' 
+                                    text: 'Bulan' 
                                 }
                             },
                             y: {
                                 title: { 
                                     display: true, 
-                                    text: 'Stock Quantity' 
+                                    text: 'Jumlah Stok' 
                                 },
                                 beginAtZero: true,
                                 
