@@ -1,55 +1,231 @@
-<x-layout>
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold">Branches</h2>
-                <div class="flex items-center space-x-2">
-                    <label for="entries">Show</label>
-                    <select id="entries" class="border rounded px-2 py-1">
-                        <option>25</option>
-                        <option>50</option>
-                        <option>100</option>
-                    </select>
-                    <span>entries</span>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="py-2 px-4 border-b">Branch</th>
-                            <th class="py-2 px-4 border-b">Phone Number</th>
-                            <th class="py-2 px-4 border-b">Email</th>
-                            <th class="py-2 px-4 border-b">Building</th>
-                            <th class="py-2 px-4 border-b">Street</th>
-                            <th class="py-2 px-4 border-b">City</th>
-                            <th class="py-2 px-4 border-b">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- @foreach ($branches as $branch) --}}
-                        <tr>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">ss</td>
-                            <td class="py-2 px-4 border-b">
-                                <button class="text-blue-500 hover:text-blue-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        {{-- @endforeach --}}
-                    </tbody>
-                </table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        #container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        canvas {
+            max-width: 100%;
+            height: 500px !important;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        .chart-controls button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+        }
+        .chart-controls button:hover {
+            background-color: #2980b9;
+        }
+        .chart-controls select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            flex-grow: 2;
+        }
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Stock Management Dashboard</h1>
+        <div class="chart-controls">
+            <select id="productSelect">
+                <option value="">All Products</option>
+                <!-- Options will be dynamically populated -->
+            </select>
+            <div class="zoom-controls">
+                <button id="zoomIn">Zoom In</button>
+                <button id="zoomOut">Zoom Out</button>
+                <button id="resetZoom">Reset View</button>
             </div>
         </div>
+        <canvas id="stockChart"></canvas>
     </div>
-</x-layout>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simplified data preparation
+            const rawChartData = @json($chartData);
+            const dates = @json($dates);
+
+            // Color palette for better visual distinction
+            const colorPalette = [
+                { in: 'rgba(75, 192, 192, 0.6)', out: 'rgba(255, 99, 132, 0.6)' },
+                { in: 'rgba(54, 162, 235, 0.6)', out: 'rgba(255, 159, 64, 0.6)' },
+                { in: 'rgba(153, 102, 255, 0.6)', out: 'rgba(255, 205, 86, 0.6)' }
+            ];
+
+            // Populate product select
+            const productSelect = document.getElementById('productSelect');
+            const productNames = [...new Set(rawChartData.map(item => item.product_name))];
+            productNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                productSelect.appendChild(option);
+            });
+
+            // Prepare chart configuration
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            let stockChart;
+
+            function createChart(filteredData) {
+                // Destroy existing chart if it exists
+                if (stockChart) {
+                    stockChart.destroy();
+                }
+
+                // Prepare datasets
+                const datasets = filteredData.flatMap((data, index) => {
+                    const colors = colorPalette[index % colorPalette.length];
+                    return [
+                        {
+                            label: `${data.product_name} - Stock In`,
+                            data: data.stock_in,
+                            backgroundColor: colors.in,
+                            borderColor: colors.in.replace('0.6', '1'),
+                            borderWidth: 1,
+                            type: 'bar'
+                        },
+                        {
+                            label: `${data.product_name} - Stock Out`,
+                            data: data.stock_out,
+                            backgroundColor: colors.out,
+                            borderColor: colors.out.replace('0.6', '1'),
+                            borderWidth: 1,
+                            type: 'bar'
+                        }
+                    ];
+                });
+
+                stockChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
+                        plugins: {
+                            zoom: {
+                                zoom: {
+                                    wheel: {
+                                        enabled: true,
+                                    },
+                                    pinch: {
+                                        enabled: true
+                                    },
+                                    mode: 'x',
+                                },
+                                pan: {
+                                    enabled: true,
+                                    mode: 'x',
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Monthly Stock Transactions'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.formattedValue} units`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { 
+                                    display: true, 
+                                    text: 'Month' 
+                                }
+                            },
+                            y: {
+                                title: { 
+                                    display: true, 
+                                    text: 'Stock Quantity' 
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Zoom controls
+                document.getElementById('zoomIn').addEventListener('click', () => {
+                    stockChart.zoom(1.2);
+                });
+
+                document.getElementById('zoomOut').addEventListener('click', () => {
+                    stockChart.zoom(0.8);
+                });
+
+                document.getElementById('resetZoom').addEventListener('click', () => {
+                    stockChart.resetZoom();
+                });
+            }
+
+            // Initial chart rendering
+            createChart(rawChartData);
+
+            // Product filter functionality
+            productSelect.addEventListener('change', function() {
+                const selectedProduct = this.value;
+                const filteredData = selectedProduct 
+                    ? rawChartData.filter(item => item.product_name === selectedProduct)
+                    : rawChartData;
+                createChart(filteredData);
+            });
+        });
+    </script>
+</body>
+</html>

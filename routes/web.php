@@ -18,10 +18,10 @@ Route::get('/home', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [Controllers\AdminController::class, 'index'])->name('welcome');
-    Route::get('/admin', [Controllers\AdminController::class, 'admin'])->middleware('userAkses:admin');
-    Route::get('/stocker', [Controllers\AdminController::class, 'stocker'])->middleware('userAkses:stocker');
-    Route::get('/purchaser', [Controllers\AdminController::class, 'purchaser'])->middleware('userAkses:purchaser');
-    Route::get('/seller', [Controllers\AdminController::class, 'seller'])->middleware('userAkses:seller');
+    Route::get('/admin', [Controllers\AdminController::class, 'showWelcome'])->middleware('userAkses:admin')->name('admin');
+    Route::get('/stocker', [Controllers\AdminController::class, 'showWelcome'])->middleware('userAkses:stocker')->name('stocker');
+    Route::get('/purchaser', [Controllers\AdminController::class, 'showWelcome'])->middleware('userAkses:purchaser')->name('purchaser');
+    Route::get('/seller', [Controllers\AdminController::class, 'showWelcome'])->middleware('userAkses:seller')->name('seller');
     Route::get('/logout', [SesiController::class, 'logout']);
 
     Route::get('/products', [Controllers\ProductController::class, 'index'])->middleware('userAkses:admin', 'userAkses:stocker')->name('products.index');
