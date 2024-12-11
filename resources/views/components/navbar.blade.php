@@ -159,8 +159,8 @@
                         <!-- Active: "bg-gray-100", Not Active: "" -->
                         <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
                             tabindex="-1" id="user-menu-item-0">Your Profile</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
-                            tabindex="-1" id="user-menu-item-1">Settings</a>
+                        <a href="{{ route('users.index') }}" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
+                            tabindex="-1" id="user-menu-item-1">Manage Users</a>
                         <a href="logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
                             tabindex="-1" id="user-menu-item-2">Sign out</a>
                     </div>

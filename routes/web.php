@@ -89,4 +89,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [Controllers\ProfileController::class, 'index'])->name('profile');
     Route::put('/profile/update', [Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password/update', [Controllers\ProfileController::class, 'updatePassword'])->name('password.update');
+
+    Route::get('/users', [Controllers\UserController::class, 'index'])->middleware('userAkses:admin')->name('users.index');
+    Route::get('/users/add', [Controllers\UserController::class, 'create'])->middleware('userAkses:admin')->name('users.create');
+    Route::post('/users', [Controllers\UserController::class, 'store'])->middleware('userAkses:admin')->name('users.store');
+    Route::get('/users/{id}/edit', [Controllers\UserController::class, 'edit'])->middleware('userAkses:admin')->name('users.edit');
+    Route::put('/users/{id}', [Controllers\UserController::class, 'update'])->middleware('userAkses:admin')->name('users.update');
+    Route::delete('/users/{id}', [Controllers\UserController::class, 'destroy'])->middleware('userAkses:admin')->name('users.destroy');
+    Route::get('/users/{id}/reset-password', [Controllers\UserController::class, 'resetPassword'])->middleware('userAkses:admin')->name('users.reset-password');
+    Route::post('/users/{id}/reset-password', [Controllers\UserController::class, 'updatePassword'])->middleware('userAkses:admin')->name('users.update-password');
 });
