@@ -7,7 +7,7 @@
         </div>
 
         <!-- Filter Section -->
-        <form method="GET" action="{{ route('reports.purchase') }}" class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <form method="GET" id="filter" action="{{ route('reports.purchase') }}" class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                 <!-- Vendor Filter -->
                 <div class="space-y-2">

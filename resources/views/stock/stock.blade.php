@@ -46,7 +46,7 @@
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <h2 class="text-xl font-semibold text-blue-700 mb-4">Laporan Pergerakan Stok</h2>
 
-                        <form method="GET" action="{{ route('stock.index') }}" class="mb-4">
+                        <form method="GET" id="filter" action="{{ route('stock.index') }}" class="mb-4">
                             <div class="grid md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Filter Produk</label>

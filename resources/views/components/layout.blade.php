@@ -88,6 +88,24 @@
         //         });
         //     @endif
         // });
+
+        let isFormChanged = false;
+
+        const forms = document.querySelectorAll('form:not(#filter)');
+
+        forms.forEach(form => {
+            form.addEventListener('input', function() {
+                isFormChanged = true;
+            });
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            if (isFormChanged) {
+                const message = "You have unsaved changes. Are you sure you want to leave?";
+                event.returnValue = message;
+                return message;
+            }
+        });
     </script>
 </body>
 

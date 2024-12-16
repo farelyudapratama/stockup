@@ -169,3 +169,9 @@
         </div>
     </div>
 </nav>
+<script>
+    document.querySelector('a[href="logout"]').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = '/logout';
+    });
+</script>

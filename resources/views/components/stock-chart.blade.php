@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             background-color: #f4f6f9;
             color: #333;
         }
+
         #container {
             max-width: 1200px;
             margin: 0 auto;
@@ -21,15 +23,18 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
+
         canvas {
             max-width: 100%;
             height: 500px !important;
         }
+
         h1 {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 30px;
         }
+
         .chart-controls {
             display: flex;
             justify-content: space-between;
@@ -37,6 +42,7 @@
             margin-top: 15px;
             gap: 10px;
         }
+
         .chart-controls button {
             background-color: #3498db;
             color: white;
@@ -47,21 +53,25 @@
             transition: background-color 0.3s ease;
             flex-grow: 1;
         }
+
         .chart-controls button:hover {
             background-color: #2980b9;
         }
+
         .chart-controls select {
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ddd;
             flex-grow: 2;
         }
+
         .zoom-controls {
             display: flex;
             gap: 10px;
         }
     </style>
 </head>
+
 <body>
     <div id="container">
         <h1>Keluar Masuknya Produk Pada Tiap Bulan</h1>
@@ -85,11 +95,26 @@
             const rawChartData = @json($chartData);
             const dates = @json($dates);
 
+            const path = window.location.pathname; // Ambil path URL
+            const userLevel = 
+                path.includes('/admin') ? 'admin' :
+                path.includes('/stocker') ? 'stocker' :
+                path.includes('/seller') ? 'seller' :
+                path.includes('/purchaser') ? 'purchaser': 'unknown';
+
             // Color palette for better visual distinction
-            const colorPalette = [
-                { in: 'rgba(0, 123, 255, 0.6)', out: 'rgba(220, 53, 69, 0.6)' },
-                { in: 'rgba(40, 167, 69, 0.6)', out: 'rgba(255, 193, 7, 0.6)' },
-                { in: 'rgba(0, 42, 184, 0.6)', out: 'rgba(142, 0, 125, 0.6)' }
+            const colorPalette = [{
+                    in: 'rgba(0, 123, 255, 0.6)',
+                    out: 'rgba(220, 53, 69, 0.6)'
+                },
+                {
+                    in: 'rgba(40, 167, 69, 0.6)',
+                    out: 'rgba(255, 193, 7, 0.6)'
+                },
+                {
+                    in: 'rgba(0, 42, 184, 0.6)',
+                    out: 'rgba(142, 0, 125, 0.6)'
+                }
             ];
 
             // Populate product select
@@ -115,13 +140,13 @@
                 // Prepare datasets
                 const datasets = filteredData.flatMap((data, index) => {
                     const colors = colorPalette[index % colorPalette.length];
-                    return [
-                        {
+                    return [{
                             label: `${data.product_name} - Stock In`,
                             data: data.stock_in,
                             backgroundColor: colors.in,
                             borderColor: colors.in.replace('0.6', '1'),
                             borderWidth: 1,
+                            hidden: userLevel === 'seller',
                             type: 'bar'
                         },
                         {
@@ -130,6 +155,7 @@
                             backgroundColor: colors.out,
                             borderColor: colors.out.replace('0.6', '1'),
                             borderWidth: 1,
+                            hidden: userLevel === 'purchaser',
                             type: 'bar'
                         }
                     ];
@@ -186,18 +212,18 @@
                         },
                         scales: {
                             x: {
-                                title: { 
-                                    display: true, 
-                                    text: 'Bulan' 
+                                title: {
+                                    display: true,
+                                    text: 'Bulan'
                                 }
                             },
                             y: {
-                                title: { 
-                                    display: true, 
-                                    text: 'Jumlah Stok' 
+                                title: {
+                                    display: true,
+                                    text: 'Jumlah Stok'
                                 },
                                 beginAtZero: true,
-                                
+
                             }
                         }
                     }
@@ -223,12 +249,13 @@
             // Product filter functionality
             productSelect.addEventListener('change', function() {
                 const selectedProduct = this.value;
-                const filteredData = selectedProduct 
-                    ? rawChartData.filter(item => item.product_name === selectedProduct)
-                    : rawChartData;
+                const filteredData = selectedProduct ?
+                    rawChartData.filter(item => item.product_name === selectedProduct) :
+                    rawChartData;
                 createChart(filteredData);
             });
         });
     </script>
 </body>
+
 </html>

@@ -7,7 +7,7 @@
                 <h2 class="text-2xl font-bold text-gray-700"><i class="fas fa-store"></i> Vendor</h2>
                 <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
                     <!-- Search Form -->
-                    <form method="GET" action="{{ route('vendors.index') }}" class="flex items-center">
+                    <form method="GET" id="filter" action="{{ route('vendors.index') }}" class="flex items-center">
                         <input type="hidden" name="entries" value="{{ $entries }}">
                         <div class="flex items-center border rounded-lg bg-white overflow-hidden">
                             <input type="text" name="search" value="{{ $search }}"

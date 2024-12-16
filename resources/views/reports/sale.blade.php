@@ -6,7 +6,7 @@
                 {{ request('end_date', 'Semua') }}</p>
         </div>
 
-        <form method="GET" action="{{ route('reports.sale') }}" class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <form method="GET" id="filter" action="{{ route('reports.sale') }}" class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
 
                 <!-- Start Date Filter -->

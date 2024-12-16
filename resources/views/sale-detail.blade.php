@@ -22,7 +22,7 @@
             <div class="p-6">
                 <div class="text-center mb-6">
                     <h2 class="text-3xl font-bold text-gray-800">StockUp</h2>
-                    <p class="text-gray-600">Jl. Contoh Jalan No. 123, Kota, Provinsi</p>
+                    <!--<p class="text-gray-600">Jl. Contoh Jalan No. 123, Kota, Provinsi</p>-->
                 </div>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>

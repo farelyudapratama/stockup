@@ -9,7 +9,7 @@
                 </h2>
 
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <form method="GET" action="{{ route('products.index') }}" class="flex-1 min-w-[280px]">
+                    <form method="GET" id="filter" action="{{ route('products.index') }}" class="flex-1 min-w-[280px]">
                         <input type="hidden" name="entries" value="{{ $entries }}">
                         <div class="flex items-center border rounded-lg bg-white overflow-hidden w-full">
                             <input type="text" name="search" value="{{ $search }}"
@@ -20,7 +20,7 @@
                         </div>
                     </form>
 
-                    <form method="GET" action="{{ route('products.index') }}"
+                    <form method="GET" id="filter" action="{{ route('products.index') }}"
                         class="flex items-center space-x-2 min-w-fit">
                         <input type="hidden" name="search" value="{{ $search }}">
                         <label for="entries" class="text-gray-600 whitespace-nowrap">Tampilkan</label>
@@ -34,7 +34,7 @@
                         <span class="text-gray-600">entri</span>
                     </form>
 
-                    <form method="GET" action="{{ route('products.index') }}"
+                    <form method="GET" id="filter" action="{{ route('products.index') }}"
                         class="flex items-center space-x-2 min-w-fit">
                         <input type="hidden" name="search" value="{{ $search }}">
                         <input type="hidden" name="entries" value="{{ $entries }}">

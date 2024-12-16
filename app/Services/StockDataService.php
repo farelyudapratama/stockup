@@ -28,14 +28,12 @@ class StockDataService
             case 'admin':
                 break;
             case 'stocker':
-                $stockIn->whereRaw('1 = 0');
-                $stockOut->whereRaw('1 = 0');
                 break;
             case 'seller':
-                $stockIn->whereRaw('1 = 0');
+                $stockOut = $stockIn->where('', '');
                 break;
             case 'purchaser':
-                $stockOut->whereRaw('1 = 0');
+                $stockOut = $stockIn->where('', '');
                 break;
         }
 

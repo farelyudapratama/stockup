@@ -14,7 +14,7 @@
 
             <!-- Filter Section -->
             <div class="p-4 border-b bg-gray-50">
-                <form method="GET" action="{{ route('purchases.index') }}" class="space-y-4">
+                <form method="GET" id="filter" action="{{ route('purchases.index') }}" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <!-- Vendor Filter -->
                         <div class="space-y-2">
