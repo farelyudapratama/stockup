@@ -92,10 +92,17 @@
         let isFormChanged = false;
 
         const forms = document.querySelectorAll('form:not(#filter)');
+        const buttonsaved = document.querySelectorAll('#save-button');
 
         forms.forEach(form => {
             form.addEventListener('input', function() {
                 isFormChanged = true;
+            });
+        });
+
+        buttonsaved.forEach(button => {
+            button.addEventListener('click', function() {
+                isFormChanged = false;
             });
         });
 
