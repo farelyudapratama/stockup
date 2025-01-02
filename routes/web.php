@@ -60,6 +60,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/purchase/add', [PurchaseController::class, 'create'])->name('purchases.create');
     Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
     Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/{id}/detail', [PurchaseController::class, 'detail'])->name('purchases.detail');
+    Route::get('/purchases/{id}/export-pdf', [PurchaseController::class, 'exportPDF'])->name('purchases.exportPDF');
     Route::get('/purchases/{id}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
     Route::put('/purchases/{id}', [PurchaseController::class, 'update'])->name('purchases.update');
     Route::delete('/purchases/{id}', [PurchaseController::class, 'destroy'])->name('purchases.destroy');

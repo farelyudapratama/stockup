@@ -101,105 +101,121 @@
 
             <!-- Table Section -->
             <div class="overflow-x-auto">
-                <div class="min-w-full divide-y divide-gray-200">
-                    <!-- Table Header -->
-                    <div class="hidden sm:grid sm:grid-cols-6 bg-gray-50">
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">No</div>
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">ID Pembelian
-                        </div>
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">Nama Vendor</div>
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal Pembelian
-                        </div>
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">Total Amount
-                        </div>
-                        <div class="py-3 px-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</div>
-                    </div>
-
-                    <!-- Table Body -->
-                    <div class="divide-y divide-gray-200">
+                <!-- Desktop Table View -->
+                <table class="hidden sm:table min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-11">
+                                No</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-24">
+                                ID Pembelian</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-48">
+                                Nama Vendor</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-32">
+                                Tanggal Pembelian</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-40">
+                                Total Amount</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-24">
+                                Detail</th>
+                            <th
+                                class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r w-32">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($purchases as $index => $purchase)
-                            <!-- Mobile Card View -->
-                            <div class="sm:hidden p-4 space-y-3">
-                                <div class="flex justify-between">
-                                    <span class="font-medium">No:</span>
-                                    <span>{{ $purchases->firstItem() + $index }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="font-medium">ID Pembelian:</span>
-                                    <span>{{ $purchase->id }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="font-medium">Vendor:</span>
-                                    <span>{{ $purchase->vendor->name }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="font-medium">Tanggal:</span>
-                                    <span>{{ $purchase->purchase_date->format('d/m/Y') }}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="font-medium">Total:</span>
-                                    <span>Rp{{ number_format($purchase->total_amount, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="flex justify-end gap-2 pt-2">
-                                    <a href="{{ route('purchases.edit', $purchase->id) }}"
-                                        class="px-3 py-1 text-blue-600 hover:text-blue-900">Edit</a>
-                                    <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus pembelian ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="px-3 py-1 text-red-600 hover:text-red-900">Hapus</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Desktop/Tablet Table View -->
-                            <div class="hidden sm:grid sm:grid-cols-6 hover:bg-gray-300">
-                                <div class="py-3 px-4">{{ $purchases->firstItem() + $index }}</div>
-                                <div class="py-3 px-4">{{ $purchase->id }}</div>
-                                <div class="py-3 px-4">{{ $purchase->vendor->name }}</div>
-                                <div class="py-3 px-4">{{ $purchase->purchase_date->format('d/m/Y') }}</div>
-                                <div class="py-3 px-4">Rp{{ number_format($purchase->total_amount, 0, ',', '.') }}
-                                </div>
-                                <div class="py-3 px-4">
-                                    <div class="flex gap-2">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center text-sm text-gray-900 whitespace-nowrap border-r">
+                                    {{ $index + $purchases->firstItem() }}</td>
+                                <td class="px-4 py-3 text-center text-sm text-gray-900 whitespace-nowrap border-r">
+                                    {{ $purchase->id }}</td>
+                                <td class="px-4 py-3 text-center text-sm text-gray-900 border-r">
+                                    <span class="truncate block max-w-xs"
+                                        title="{{ $purchase->vendor->name }}">{{ Str::limit($purchase->vendor->name, 20) }}</span>
+                                </td>
+                                <td class="px-4 py-3 text-center text-sm text-gray-900 whitespace-nowrap border-r">
+                                    {{ $purchase->purchase_date->format('d-m-Y') }}</td>
+                                <td class="px-4 py-3 text-center text-sm text-gray-900 whitespace-nowrap border-r">
+                                    Rp{{ number_format($purchase->total_amount, 2, ',', '.') }}</td>
+                                <td class="px-4 py-3 text-center border-r">
+                                    <a href="{{ route('purchases.detail', $purchase->id) }}"
+                                        class="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 transition-colors duration-200">Lihat
+                                        Detail</a>
+                                </td>
+                                <td class="py-3 text-center border-r">
+                                    <div class="flex items-center justify-center space-x-2">
                                         <a href="{{ route('purchases.edit', $purchase->id) }}"
-                                            class="text-blue-600 hover:text-blue-900">Edit</a>
-                                        <form action="{{ route('purchases.destroy', $purchase->id) }}" method="POST"
-                                            class="delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                class="delete-button text-red-600 hover:text-red-900"
-                                                data-url="{{ route('purchases.destroy', $purchase->id) }}">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                            class="inline-flex items-center justify-center px-7 py-1 bg-yellow-100 text-yellow-800 rounded-md hover:bg-yellow-200 transition-colors duration-200"><i
+                                                class="fas fa-edit"></i> Edit</a>
+                                        <button type="button" data-url="{{ route('purchases.destroy', $purchase->id) }}"
+                                            class="delete-button inline-flex items-center justify-center px-7 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors duration-200"><i
+                                                class="fas fa-trash"></i> Hapus</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-4 py-8 text-center text-gray-500">Tidak ada pembelian
+                                    yang ditemukan</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                <!-- Mobile Card View -->
+                <div class="sm:hidden divide-y divide-gray-200">
+                    @forelse ($purchases as $index => $purchase)
+                        <div class="p-4 bg-white hover:bg-gray-50">
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-500">No:</span>
+                                    <span class="text-sm text-gray-900">{{ $index + $purchases->firstItem() }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-500">ID Pembelian:</span>
+                                    <span class="text-sm text-gray-900">{{ $purchase->id }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-500">Vendor:</span>
+                                    <span class="text-sm text-gray-900 truncate block max-w-xs"
+                                        title="{{ $purchase->vendor->name }}">{{ Str::limit($purchase->vendor->name, 20) }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-500">Tanggal:</span>
+                                    <span
+                                        class="text-sm text-gray-900">{{ $purchase->purchase_date->format('d-m-Y') }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-500">Total:</span>
+                                    <span
+                                        class="text-sm text-gray-900">Rp{{ number_format($purchase->total_amount, 2, ',', '.') }}</span>
+                                </div>
+
+                                <!-- Mobile Actions -->
+                                <div class="mt-4 flex flex-col space-y-2">
+                                    <a href="{{ route('purchases.detail', $purchase->id) }}"
+                                        class="w-full py-2 bg-blue-100 text-blue-600 rounded-md text-center text-sm font-medium hover:bg-blue-200 transition-colors duration-200">Lihat
+                                        Detail</a>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <a href="{{ route('purchases.edit', $purchase->id) }}"
+                                            class="py-2 bg-yellow-100 text-yellow-800 rounded-md text-center text-sm font-medium hover:bg-yellow-200 transition-colors duration-200"><i
+                                                class="fas fa-edit"></i> Edit</a>
+                                        <button type="button" data-url="{{ route('purchases.destroy', $purchase->id) }}"
+                                            class="delete-button w-full py-2 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200 transition-colors duration-200"><i
+                                                class="fas fa-trash"></i> Hapus</button>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Detail Products Section -->
-                            <div class="bg-gray-50 px-4 py-3">
-                                <div class="text-sm">
-                                    <strong>Detail Produk:</strong>
-                                    <ul class="mt-2 space-y-1">
-                                        @foreach ($purchase->details as $detail)
-                                            <li class="text-sm">
-                                                {{ $detail->product->name }} - {{ $detail->quantity }} x
-                                                Rp{{ number_format($detail->unit_price, 0, ',', '.') }} =
-                                                Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="py-8 px-4 text-center text-gray-500">
-                                Tidak ada pembelian yang ditemukan
-                            </div>
-                        @endforelse
-                    </div>
+                        </div>
+                    @empty
+                        <div class="p-4 text-center text-gray-500">Tidak ada pembelian yang ditemukan</div>
+                    @endforelse
                 </div>
             </div>
 
@@ -256,17 +272,17 @@
                             const form = document.createElement('form');
                             form.action = url;
                             form.method = 'POST';
-
+    
                             const csrfToken = document.createElement('input');
                             csrfToken.type = 'hidden';
                             csrfToken.name = '_token';
                             csrfToken.value = '{{ csrf_token() }}';
-
+    
                             const methodInput = document.createElement('input');
                             methodInput.type = 'hidden';
                             methodInput.name = '_method';
                             methodInput.value = 'DELETE';
-
+    
                             form.appendChild(csrfToken);
                             form.appendChild(methodInput);
                             document.body.appendChild(form);
@@ -283,7 +299,7 @@
                     confirmButtonText: 'OK'
                 });
             @endif
-
+    
             @if (session('error'))
                 Swal.fire({
                     icon: 'error',
@@ -294,4 +310,5 @@
             @endif
         });
     </script>
+    
 </x-layout>

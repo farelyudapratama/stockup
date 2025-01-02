@@ -7,6 +7,7 @@ use App\Models\PurchaseDetail;
 use App\Models\Product;
 use App\Models\ProductHistory;
 use App\Models\Vendor;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PurchaseController extends Controller
@@ -188,6 +189,18 @@ class PurchaseController extends Controller
         }
     }
 
+    public function detail($id)
+    {
+        try {
+            $purchase = Purchase::with('details.product', 'vendor')->findOrFail($id);
+
+            return view('purchase-detail', compact('purchase'));
+        } catch (\Exception $e) {
+            return redirect()->route('purchases.index')
+                ->with('error', 'Penjualan tidak ditemukan.');
+        }
+    }
+
     public function destroy($id)
     {
         try {
@@ -216,5 +229,14 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Gagal menghapus pembelian. Error: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function exportPDF($id)
+    {
+        $purchase = Purchase::with('details.product')->findOrFail($id);
+
+        $pdf = Pdf::loadView('purchases.pdf', compact('purchase'));
+        
+        return $pdf->download('Detail Penjualan - Id:' . $id . '.pdf');
     }
 }
