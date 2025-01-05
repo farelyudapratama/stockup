@@ -1,6 +1,6 @@
 <x-layout>
 
-    <div class="min-h-screen bg-gray-100 flex items-center z-10 sm:w-8/12">
+    <div class="min-h-screen bg-gray-100 flex items-start justify-center z-10 px-2 my-10">
         <div class="sm:max-w-screen-lg w-full space-y-8 bg-white rounded-xl shadow-2xl overflow-hidden">
             <div class="bg-blue-600 px-6 py-4">
                 <h2 class="text-2xl font-bold text-white text-center">Edit Produk</h2>
