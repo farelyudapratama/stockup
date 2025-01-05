@@ -66,6 +66,8 @@ class PurchaseController extends Controller
                     'new_value' => $product->current_stock,
                     'reason_changed' => 'Purchase added',
                 ]);
+
+                $product->logPriceChange($unitPrice);
             }
 
             return redirect()->back()->with('success', 'Pembelian berhasil ditambahkan.');
@@ -181,6 +183,8 @@ class PurchaseController extends Controller
                     'new_value' => $product->current_stock,
                     'reason_changed' => 'Purchase updated (detail added)',
                 ]);
+                
+                $product->logPriceChange($unitPrice);
             }
 
             return redirect()->route('purchases.index')->with('success', 'Pembelian berhasil diubah.');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PriceChange;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductHistory;
@@ -10,7 +11,7 @@ use App\Models\PurchaseDetail;
 use Carbon\Carbon;
 
 // use App\Models\Vendor;
-
+// XXX Ganti fungsi price, buat agar ada price penjualan dan price rata rata pembelian
 class ProductController extends Controller
 {
     public function create()
@@ -23,16 +24,25 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'initial_stock' => 'required|integer|min:0',
+            'selling_price' => 'required|numeric|min:0',  // Validasi untuk harga jual
+            'purchase_price' => 'nullable|numeric|min:0', // Validasi untuk harga pembelian
         ]);
 
         try {
             $product = Product::create([
                 'name' => $request->name,
-                'description' => $request->description,
+                'description' => $request->description,     // Atur jadi optional di form
                 'initial_stock' => $request->initial_stock,
                 'current_stock' => $request->initial_stock,
+                'selling_price' => $request->selling_price,  // Atur jadi optional di form
+                'purchase_price' => $request->purchase_price,  // Atur jadi optional di form
             ]);
 
+            if ($request->purchase_price) {
+                $product->logPriceChange($request->purchase_price);
+            }
+
+            // Riwayat perubahan stok
             ProductHistory::create([
                 'product_id' => $product->id,
                 'changed_field' => 'initial_stock',
@@ -48,7 +58,6 @@ class ProductController extends Controller
                 'new_value' => $product->current_stock,
                 'reason_changed' => 'Produk baru ditambahkan',
             ]);
-
 
             return redirect()->back()->with('success', 'Produk berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -81,6 +90,7 @@ class ProductController extends Controller
             // dd($dateRange, $stockInfo);
             $product->initial_stock = $stockInfo['initial_stock'];
             $product->current_stock = $stockInfo['current_stock'];
+            $product->average_purchase_price = $product->calculateAveragePurchasePrice(); // NOTE sementara gini dulu gapake history
         }
 
         return view('product-list', compact('products', 'entries', 'search', 'month'));
@@ -199,6 +209,8 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'initial_stock' => 'required|integer|min:0',
             'current_stock' => 'required|integer|min:0',
+            'selling_price' => 'required|numeric|min:0',
+            'purchase_price' => 'nullable|numeric|min:0',
             'reason_changed' => 'required|string',
         ]);
 
@@ -208,6 +220,18 @@ class ProductController extends Controller
         $isDescriptionChanged = $product->description !== $request->description;
         $isInitialStockChanged = $product->initial_stock != $request->initial_stock;
         $isCurrentStockChanged = $product->current_stock != $request->current_stock;
+        $isSellingPriceChanged = $product->selling_price != $request->selling_price;
+        $isPurchasePriceChanged = $product->purchase_price != $request->purchase_price;
+
+        if ($isSellingPriceChanged) {
+            $product->update([
+                'selling_price' => $request->selling_price,
+            ]);
+        }
+
+        if ($isPurchasePriceChanged && $request->purchase_price) {
+            $product->logPriceChange($request->purchase_price);
+        }
 
         if (!$isNameChanged && !$isDescriptionChanged && !$isInitialStockChanged && !$isCurrentStockChanged) {
             return redirect()->back()->with('error', 'Tidak ada perubahan yang disimpan karena data sama.');
@@ -348,5 +372,4 @@ class ProductController extends Controller
             // 'orders' => $relatedOrders,
         ]);
     }
-
 }

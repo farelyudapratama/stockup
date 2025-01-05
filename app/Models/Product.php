@@ -10,7 +10,30 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'initial_stock', 'current_stock'];
+    protected $fillable = ['name', 'description', 'initial_stock', 'current_stock', 'selling_price', 'average_purchase_price'];
+
+    public function priceChanges()
+    {
+        return $this->hasMany(ProductPriceChange::class);
+    }
+
+    public function calculateAveragePurchasePrice()
+    {
+        return $this->priceChanges()
+                    ->avg('price'); // Menggunakan avg() langsung dari database
+    }
+
+    public function logPriceChange($newPrice, $quantity = 1)
+    {
+        $this->priceChanges()->create([
+            'price' => $newPrice,
+            'quantity' => $quantity
+        ]);
+
+        $this->average_purchase_price = $this->calculateAveragePurchasePrice();
+        $this->save();
+    }
+
 
     public function purchaseDetails()
     {

@@ -75,7 +75,7 @@
                                 <option value="">Pilih Produk</option>
                                 @foreach ($products as $product)
                                     <option value="{{ $product->id }}"
-                                        data-price="{{ optional($product->productPrices->first())->price ?? 0 }}">
+                                        data-price="{{ optional($product->selling_price)->isEmpty() ? 0 : number_format($product->selling_price, 2) }}">
                                         {{ $product->name }}
                                     </option>
                                 @endforeach
@@ -144,7 +144,7 @@
                         return [
                             'id' => $product->id,
                             'name' => $product->name,
-                            'price' => optional($product->productPrices->last())->price ?? 0
+                            'price' => $product->selling_price ?? null
                         ];
                     })->values());
 
@@ -154,11 +154,20 @@
                 const selectedOption = select.options[select.selectedIndex];
                 const price = selectedOption.dataset.price;
 
-                if (price) {
+                if (price !="null" && price) {
                     const formattedPrice = formatRupiah(price);
                     priceInput.value = formattedPrice;
                 } else {
-                    priceInput.value = '';
+                    priceInput.value = 'Harga Tidak Tersedia';
+
+                    // Swal.fire({
+                    //     icon: 'warning',
+                    //     title: 'Peringatan',
+                    //     text: 'Harga produk ini tidak tersedia.',
+                    //     confirmButtonText: 'OK',
+                    //     cancelButtonText: 'Perbarui Harga',
+                    //     cancelButtonColor: '#3085d6',
+                    // });
                 }
 
                 calculateTotal();
@@ -273,6 +282,7 @@
                 productItems.forEach(item => {
                     const quantity = item.querySelector('input[name*="[quantity]"]').value || 0;
                     const unitPriceText = item.querySelector('input[name*="[unit_price]"]').value || '0';
+                    
                     const unitPrice = parseRupiahToNumber(unitPriceText);
                     const subtotal = quantity * unitPrice;
 
@@ -325,8 +335,19 @@
                 Swal.fire({
                     icon: '{{ session('error_type') ?? 'error' }}',
                     title: '{{ session('error_title') ?? 'Terjadi Kesalahan' }}',
-                    text: '{{ session('error') }}',
-                    confirmButtonText: 'OK'
+                    html: `{{ session('error') }}`,
+                    confirmButtonText: 'OK',
+                    showCancelButton: {{ session('show_link_button') ? 'true' : 'false' }},
+                    cancelButtonText: 'Perbarui Harga',
+                    cancelButtonColor: '#3085d6',
+                    didOpen: () => {
+                        // Jika tombol cancel diklik, redirect ke halaman produk
+                        if ({{ session('show_link_button') ? 'true' : 'false' }}) {
+                            Swal.getCancelButton().addEventListener('click', () => {
+                                window.location.href = '{{ session('product_url') }}';
+                            });
+                        }
+                    }
                 });
             @endif
         });

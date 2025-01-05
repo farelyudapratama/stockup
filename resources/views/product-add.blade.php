@@ -30,6 +30,13 @@
                         placeholder="Masukkan jumlah stok awal" min="0">
                 </div>
 
+                <div>
+                    <label for="selling_price" class="block text-sm font-medium text-gray-700 mb-1">Harga Jual/unit</label>
+                    <input type="number" id="selling_price" name="selling_price" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                        placeholder="Masukkan harga jual per unit" min="0">
+                </div>
+
                 <div class="flex items-center justify-between">
                     <a href="{{ route('products.index') }}"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 transition duration-150 ease-in-out cursor-pointer">

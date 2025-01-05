@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductPrice;
 use Illuminate\Http\Request;
-
+// NOTE ini dihapus aja karena udah langsung ada di Product.php
 class PriceController extends Controller
 {
     public function index(Request $request)

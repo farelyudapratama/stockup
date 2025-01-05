@@ -76,6 +76,12 @@
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r whitespace-nowrap">
                                 Stok Sekarang</th>
                             <th
+                                class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r whitespace-nowrap">
+                                Harga Jual</th>
+                            <th
+                                class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-r whitespace-nowrap">
+                                Rata-Rata Harga Beli</th>
+                            <th
                                 class="py-3 px-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Aksi</th>
                         </tr>
@@ -91,8 +97,16 @@
                                     {{ $product->initial_stock }}
                                 </td>
                                 <td
-                                    class="py-3 px-4 text-center border-r whitespace-nowrap {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
+                                    class="py-3 px-4 bg-gray-300 text-center border-r whitespace-nowrap {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
                                     {{ $product->current_stock }}
+                                </td>
+                                <td
+                                    class="py-3 px-4 text-center border-r whitespace-nowrap {{ $product->selling_price < $product->average_purchase_price ? 'text-red-500 font-bold' : '' }}">
+                                    {{ $product->selling_price ?? '-' }}
+                                </td>
+                                <td
+                                    class="py-3 px-4 bg-gray-300 text-center border-r whitespace-nowrap {{ $product->current_stock < 10 ? 'text-red-500 font-bold' : '' }}">
+                                    {{ $product->average_purchase_price ?? '-'}}
                                 </td>
                                 <td class="py-3 px-4">
                                     <div class="flex gap-4 justify-center">

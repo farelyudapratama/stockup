@@ -43,6 +43,15 @@
                 </div>
 
                 <div>
+                    <label for="selling_price" class="block text-sm font-medium text-gray-700 mb-1">Harga
+                        Jual/unit</label>
+                    <input type="number" id="selling_price" name="selling_price" required
+                        value="{{ $product->selling_price }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                        placeholder="Masukkan harga jual per unit" min="0">
+                </div>
+
+                <div>
                     <label for="reason_changed" class="block text-sm font-medium text-gray-700 mb-1">Alasan
                         Diubah</label>
                     <input type="text" id="reason_changed" name="reason_changed" required

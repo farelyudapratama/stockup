@@ -45,7 +45,7 @@ class SaleController extends Controller
 
     public function create()
     {
-        $products = Product::with('productPrices')->get();
+        $products = Product::all();
 
         return view('sale-add', compact('products'));
     }
@@ -64,6 +64,31 @@ class SaleController extends Controller
 
         try {
             $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
+            foreach ($request->products as $productData) {
+                $product = Product::findOrFail($productData['product_id']);
+
+                // Validasi harga produk
+                if (is_null($product->selling_price)) {
+                    $productUrl = route('products.edit', $product->id);
+
+                    return redirect()->back()->withInput()->with([
+                        'error' => 'Harga produk ' . $product->name . ' tidak tersedia.',
+                        'error_title' => 'Peringatan Harga',
+                        'error_type' => 'warning',
+                        'show_link_button' => true,
+                        'product_url' => $productUrl,
+                    ]);
+                }
+
+                // Validasi stok
+                if ($product->current_stock < $productData['quantity']) {
+                    return redirect()->back()->withInput()->with([
+                        'error' => 'Stok produk ' . $product->name . ' tidak mencukupi.',
+                        'error_title' => 'Peringatan Stok',
+                        'error_type' => 'warning',
+                    ]);
+                }
+            }
 
             $sale = Sales::create([
                 'buyer_name' => $request->buyer_name,
@@ -73,14 +98,7 @@ class SaleController extends Controller
 
             foreach ($request->products as $productData) {
                 $product = Product::findOrFail($productData['product_id']);
-
-                if ($product->current_stock < $productData['quantity']) {
-                    return redirect()->back()->withInput()->with([
-                        'error' => 'Stok produk ' . $product->name . ' tidak mencukupi.',
-                        'error_title' => 'Peringatan Stok',
-                        'error_type' => 'warning',
-                    ]);
-                }
+                // TODO yang edit blom ini buat tanda aja
 
                 $unitPrice = (float) preg_replace('/[^\d]/', '', $productData['unit_price']);
 
@@ -115,14 +133,13 @@ class SaleController extends Controller
     public function edit($id)
     {
         $sale = Sales::with('details')->findOrFail($id);
-        $products = Product::with('productPrices')->get();
+        $products = Product::all();
 
         return view('sale-edit', compact('sale', 'products'));
     }
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $request->validate([
             'buyer_name' => 'required',
             'sale_date' => 'required|date',
@@ -136,53 +153,82 @@ class SaleController extends Controller
         try {
             $sale = Sales::findOrFail($id);
             $totalAmount = (float) preg_replace('/[^\d]/', '', $request->total_amount);
+
+            // Validasi semua produk terlebih dahulu
+            foreach ($request->products as $productData) {
+                $product = Product::findOrFail($productData['product_id']);
+
+                // Validasi harga
+                if (is_null($product->selling_price)) {
+                    $productUrl = route('products.edit', $product->id);
+
+                    return redirect()->back()->withInput()->with([
+                        'error' => 'Harga produk ' . $product->name . ' tidak tersedia.',
+                        'error_title' => 'Peringatan Harga',
+                        'error_type' => 'warning',
+                        'show_link_button' => true,
+                        'product_url' => $productUrl,
+                    ]);
+                }
+
+                // Validasi stok (jika diperlukan)
+                if ($product->current_stock + $sale->details->where('product_id', $product->id)->sum('quantity') < $productData['quantity']) {
+                    return redirect()->back()->withInput()->with([
+                        'error' => 'Stok produk ' . $product->name . ' tidak mencukupi.',
+                        'error_title' => 'Peringatan Stok',
+                        'error_type' => 'warning',
+                    ]);
+                }
+            }
+
+            // Kembalikan stok semua produk ke kondisi awal
+            foreach ($sale->details as $detail) {
+                $product = Product::findOrFail($detail->product_id);
+                $product->current_stock += $detail->quantity;
+                $product->save();
+
+                // Catat perubahan stok
+                ProductHistory::create([
+                    'product_id' => $product->id,
+                    'changed_field' => 'current_stock',
+                    'old_value' => $product->current_stock - $detail->quantity,
+                    'new_value' => $product->current_stock,
+                    'reason_changed' => 'Sale updated (restocking)',
+                ]);
+
+                $detail->delete(); // Hapus detail lama
+            }
+
+            // Perbarui data penjualan
             $sale->update([
                 'buyer_name' => $request->buyer_name,
                 'sale_date' => $request->sale_date,
                 'total_amount' => $totalAmount,
             ]);
 
-            foreach ($sale->details as $detail) {
-                $product = Product::findOrFail($detail->product_id);
-                $oldStock = $product->current_stock;
-
-                $product->current_stock += $detail->quantity;
-                $product->save();
-
-                ProductHistory::create([
-                    'product_id' => $product->id,
-                    'changed_field' => 'current_stock',
-                    'old_value' => $oldStock,
-                    'new_value' => $product->current_stock,
-                    'reason_changed' => 'Sale updated (detail removed)',
-                ]);
-
-                $detail->delete();
-            }
-
+            // Tambahkan detail baru
             foreach ($request->products as $productData) {
+                $product = Product::findOrFail($productData['product_id']);
                 $unitPrice = (float) preg_replace('/[^\d]/', '', $productData['unit_price']);
-                $saleDetail = SaleDetail::create([
+
+                SaleDetail::create([
                     'sales_id' => $sale->id,
-                    'product_id' => $productData['product_id'],
+                    'product_id' => $product->id,
                     'quantity' => $productData['quantity'],
                     'unit_price' => $unitPrice,
                     'subtotal' => $unitPrice * $productData['quantity'],
                 ]);
 
-                if ($saleDetail->wasRecentlyCreated) {
-                    $product->current_stock -= $productData['quantity'];
-                } else {
-                    $oldQuantity = $saleDetail->getOriginal('quantity');
-                    $product->current_stock += $oldQuantity - $productData['quantity'];
-                }
-
+                // Kurangi stok produk
+                $oldStock = $product->current_stock;
+                $product->current_stock -= $productData['quantity'];
                 $product->save();
 
+                // Catat perubahan stok
                 ProductHistory::create([
                     'product_id' => $product->id,
                     'changed_field' => 'current_stock',
-                    'old_value' => $product->current_stock + ($saleDetail->wasRecentlyCreated ? $productData['quantity'] : $oldQuantity),
+                    'old_value' => $oldStock,
                     'new_value' => $product->current_stock,
                     'reason_changed' => 'Sale updated',
                 ]);
