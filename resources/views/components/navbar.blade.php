@@ -72,9 +72,9 @@
                                 <a href="/product/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
                                     Produk</a>
-                                <a href="/price/add"
+                                {{-- <a href="/price/add"
                                     class="block py-2 px-4 rounded hover:bg-gray-100 transition-colors duration-200">Tambah
-                                    Harga</a>
+                                    Harga</a> --}}
                             </div>
                         </div>
 

@@ -18,7 +18,7 @@
         <div x-data="{ openFolders: {} }">
             <div class="mb-2">
                 <button @click="openFolders['Kelola Master Data'] = !openFolders['Kelola Master Data']"
-                    class="{{ request()->is(['products', 'vendors', 'prices']) ? 'bg-cyan-700' : 'text-white ' }} flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
+                    class="{{ request()->is(['products', 'vendors']) ? 'bg-cyan-700' : 'text-white ' }} flex justify-between items-center w-full py-2 px-4 text-left rounded hover:bg-gray-700 focus:outline-none transition-colors duration-200">
                     <span>Master Data</span>
                     <svg class="w-4 h-4 transition-transform duration-200"
                         :class="{ 'rotate-90': openFolders['Kelola Master Data'] }" xmlns="http://www.w3.org/2000/svg"
@@ -33,11 +33,11 @@
                             Produk</a>
                     @endif
 
-                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'seller')
+                    {{-- @if (auth()->user()->role == 'admin' || auth()->user()->role == 'seller')
                         <a href="/prices"
                             class=" {{ request()->is('prices') ? 'bg-cyan-800' : 'text-white ' }} block py-2 px-4 rounded hover:bg-gray-700 transition-colors duration-200">
                             Harga</a>
-                    @endif
+                    @endif --}}
 
                     @if (auth()->user()->role == 'admin' || auth()->user()->role == 'purchaser')
                         <a href="/vendors"
